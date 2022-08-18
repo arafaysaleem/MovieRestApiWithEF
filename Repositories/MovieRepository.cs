@@ -1,21 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MovieRestApiWithEF.EfCore;
-using MovieRestApiWithEF.Models;
+﻿using Contracts;
+using Entities;
+using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace MovieRestApiWithEF.Repositories
+namespace Repositories
 {
-    public class MovieRepository : IMovieRepository
+    public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
-        private readonly MovieAppDbContext _db;
+        public MovieRepository(MovieAppDbContext db) : base(db) { }
 
-        public MovieRepository(MovieAppDbContext db)
-        {
-            _db = db;
-        }
         public async Task<IEnumerable<Movie>> GetAllMovies()
         {
-            return await _db.Movies
-                .AsNoTracking()
+            return await FindAll()
                 .Include(e => e.Cast)
                 .Include(e => e.Genre)
                 .Include(e => e.Director)
@@ -24,43 +20,21 @@ namespace MovieRestApiWithEF.Repositories
 
         public async Task<Movie?> GetMovieById(int id)
         {
-            return await _db.Movies
-                .AsNoTracking()
+            return await FindByCondition(e => e.Id.Equals(id))
                 .Include(e => e.Cast)
                 .Include(e => e.Genre)
                 .Include(e => e.Director)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> MovieExists(int id)
-        {
-            return await _db.Movies
-                .AsNoTracking()
-                .AnyAsync(o => o.Id == id);
-        }
+        public async Task<bool> MovieExists(String title) => await ExistsAsync(o => o.Title.Equals(title));
 
-        public Task<bool> CreateMovie(Movie movie)
-        {
-            _db.Add<Movie>(movie);
-            return Save();
-        }
+        public async Task<bool> MovieExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
 
-        public Task<bool> DeleteMovie(Movie movie)
-        {
-            _db.Remove<Movie>(movie);
-            return Save();
-        }
+        public void CreateMovie(Movie movie) => Create(movie);
 
+        public void DeleteMovie(Movie movie) => Delete(movie);
 
-        public async Task<bool> Save()
-        {
-            return (await _db.SaveChangesAsync()) >= 0 ? true : false;
-        }
-
-        public Task<bool> UpdateMovie(Movie movie)
-        {
-            _db.Movies.Update(movie);
-            return Save();
-        }
+        public void UpdateMovie(Movie movie) => Update(movie);
     }
 }
