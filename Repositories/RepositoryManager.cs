@@ -1,14 +1,13 @@
 ﻿using Contracts;
 using Entities;
-using Repositories;
 
-namespace Repository
+namespace Repositories
 {
     public class RepositoryManager : IRepositoryManager
     {
-        private MovieAppDbContext _dbContext;
+        private readonly MovieAppDbContext _dbContext;
         private IMovieRepository _movie;
-        
+
         public RepositoryManager(MovieAppDbContext MovieAppDbContext)
         {
             _dbContext = MovieAppDbContext;
@@ -29,12 +28,12 @@ namespace Repository
 
         public async Task<bool> SaveAsync()
         {
-            return (await _dbContext.SaveChangesAsync()) >= 0 ? true : false;
+            return (await _dbContext.SaveChangesAsync()) >= 0;
         }
 
         public bool Save()
         {
-            return _dbContext.SaveChanges() >= 0 ? true : false;
+            return _dbContext.SaveChanges() >= 0;
         }
     }
 }

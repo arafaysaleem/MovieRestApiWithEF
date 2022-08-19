@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MovieRestApiWithEF.Migrations
+namespace Entities.Migrations
 {
     [DbContext(typeof(MovieAppDbContext))]
     partial class MovieAppDbContextModelSnapshot : ModelSnapshot
@@ -19,22 +19,7 @@ namespace MovieRestApiWithEF.Migrations
                 .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("MovieCast", b =>
-                {
-                    b.Property<int>("CastId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CastId", "MovieId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("MovieCast");
-                });
-
-            modelBuilder.Entity("MovieRestApiWithEF.Models.Genre", b =>
+            modelBuilder.Entity("Entities.Models.Genre", b =>
                 {
                     b.Property<int>("GenreId")
                         .ValueGeneratedOnAdd()
@@ -42,14 +27,15 @@ namespace MovieRestApiWithEF.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.HasKey("GenreId");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genre", (string)null);
                 });
 
-            modelBuilder.Entity("MovieRestApiWithEF.Models.Movie", b =>
+            modelBuilder.Entity("Entities.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,7 +52,8 @@ namespace MovieRestApiWithEF.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
                     b.HasKey("Id");
 
@@ -74,10 +61,10 @@ namespace MovieRestApiWithEF.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
-            modelBuilder.Entity("MovieRestApiWithEF.Models.MovieWorker", b =>
+            modelBuilder.Entity("Entities.Models.MovieWorker", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +72,8 @@ namespace MovieRestApiWithEF.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
 
                     b.Property<string>("PictureUrl")
                         .IsRequired()
@@ -93,36 +81,36 @@ namespace MovieRestApiWithEF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MovieWorker");
+                    b.ToTable("MovieWorker", (string)null);
                 });
 
             modelBuilder.Entity("MovieCast", b =>
                 {
-                    b.HasOne("MovieRestApiWithEF.Models.MovieWorker", null)
-                        .WithMany()
-                        .HasForeignKey("CastId")
+                    b.Property<int>("CastId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CastId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("MovieCast", (string)null);
+                });
+
+            modelBuilder.Entity("Entities.Models.Movie", b =>
+                {
+                    b.HasOne("Entities.Models.MovieWorker", "Director")
+                        .WithMany("DirectedMovies")
+                        .HasForeignKey("DirectorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MovieRestApiWithEF.Models.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MovieRestApiWithEF.Models.Movie", b =>
-                {
-                    b.HasOne("MovieRestApiWithEF.Models.MovieWorker", "Director")
-                        .WithMany("DirectedMovies")
-                        .HasForeignKey("DirectorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("MovieRestApiWithEF.Models.Genre", "Genre")
+                    b.HasOne("Entities.Models.Genre", "Genre")
                         .WithMany("Movies")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Director");
@@ -130,12 +118,27 @@ namespace MovieRestApiWithEF.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("MovieRestApiWithEF.Models.Genre", b =>
+            modelBuilder.Entity("MovieCast", b =>
+                {
+                    b.HasOne("Entities.Models.MovieWorker", null)
+                        .WithMany()
+                        .HasForeignKey("CastId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Models.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Entities.Models.Genre", b =>
                 {
                     b.Navigation("Movies");
                 });
 
-            modelBuilder.Entity("MovieRestApiWithEF.Models.MovieWorker", b =>
+            modelBuilder.Entity("Entities.Models.MovieWorker", b =>
                 {
                     b.Navigation("DirectedMovies");
                 });

@@ -3,7 +3,7 @@ using Entities;
 using LoggerService;
 using Microsoft.EntityFrameworkCore;
 using NLog;
-using Repository;
+using Repositories;
 
 namespace MovieRestApiWithEF.Extensions
 {
@@ -31,8 +31,10 @@ namespace MovieRestApiWithEF.Extensions
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<MovieAppDbContext>(x =>
             {
-                var mySqlVersion = new Version(10, 4, 17);
-                x.UseMySql(connectionString, new MySqlServerVersion(mySqlVersion));
+                var mySqlVersion = new Version(10, 8, 0);
+                x.UseMySql(connectionString,
+                    new MariaDbServerVersion(mySqlVersion),
+                    b => b.MigrationsAssembly(nameof(Entities)));
             });
         }
 
