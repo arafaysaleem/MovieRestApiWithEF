@@ -2,7 +2,7 @@
 
 namespace Contracts
 {
-    public interface IMovieRepository : IRepositoryBase<Movie>
+    public interface IMovieRepository
     {
         Task<IEnumerable<Movie>> GetAllMovies();
 

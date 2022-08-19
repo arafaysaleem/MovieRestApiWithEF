@@ -1,5 +1,8 @@
-﻿using Contracts;
+﻿using AutoMapper;
+using Contracts;
 using Entities.Models;
+using Entities.RequestDtos;
+using Entities.ResponseDtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieRestApiWithEF.Controllers
@@ -10,10 +13,12 @@ namespace MovieRestApiWithEF.Controllers
     {
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
-        public MoviesController(IRepositoryManager repositoryManager, ILoggerManager loggerManager)
+        private readonly IMapper _mapper;
+        public MoviesController(IRepositoryManager repositoryManager, ILoggerManager loggerManager, IMapper mapper)
         {
             _repository = repositoryManager;
             _logger = loggerManager;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -26,7 +31,9 @@ namespace MovieRestApiWithEF.Controllers
             {
                 var movies = await _repository.MovieRepository.GetAllMovies();
                 _logger.LogInfo($"Returned all movies from database.");
-                return Ok(movies);
+
+                var moviesResult = _mapper.Map<IEnumerable<MovieWithDetailsDto>>(movies);
+                return Ok(moviesResult);
             }
             catch (Exception ex)
             {
@@ -52,7 +59,9 @@ namespace MovieRestApiWithEF.Controllers
                 else
                 {
                     _logger.LogInfo($"Returned movie with id: {id}");
-                    return Ok(movie);
+
+                    var movieResult = _mapper.Map<MovieWithDetailsDto>(movie);
+                    return Ok(movieResult);
                 }
             }
             catch (Exception ex)
@@ -66,11 +75,11 @@ namespace MovieRestApiWithEF.Controllers
         /// Create a new movie
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Movie movie)
+        public async Task<IActionResult> Post([FromBody] MovieUpdateDto movie)
         {
             try
             {
-                if (movie == null)
+                if (movie is null)
                 {
                     _logger.LogError("Movie object sent from client is null.");
                     return BadRequest("Movie object is null");
@@ -91,7 +100,8 @@ namespace MovieRestApiWithEF.Controllers
                     return StatusCode(500, ModelState);
                 }
 
-                _repository.MovieRepository.CreateMovie(movie);
+                var movieEntity = _mapper.Map<Movie>(movie);
+                _repository.MovieRepository.CreateMovie(movieEntity);
                 var success = await _repository.SaveAsync();
 
                 if (!success)
@@ -100,7 +110,9 @@ namespace MovieRestApiWithEF.Controllers
                     return StatusCode(500, ModelState);
                 }
 
-                return CreatedAtAction(nameof(GetOne), new { id = movie.Id }, movie);
+                var createdMovie = _mapper.Map<MovieDto>(movieEntity);
+
+                return CreatedAtAction(nameof(GetOne), new { id = createdMovie.Id }, createdMovie);
             }
             catch (Exception ex)
             {
@@ -115,7 +127,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpPut("{movieId:int}")]
-        public async Task<IActionResult> Update(int movieId, [FromBody] Movie movie)
+        public async Task<IActionResult> Update(int movieId, [FromBody] MovieUpdateDto movie)
         {
             try
             {
@@ -129,6 +141,7 @@ namespace MovieRestApiWithEF.Controllers
                     _logger.LogError("Invalid movie object sent from client.");
                     return BadRequest("Invalid model object");
                 }
+
                 var movieExists = await _repository.MovieRepository.MovieExists(movieId);
                 if (!movieExists)
                 {
@@ -136,7 +149,8 @@ namespace MovieRestApiWithEF.Controllers
                     return NotFound();
                 }
 
-                _repository.MovieRepository.UpdateMovie(movie);
+                var movieEntity = _mapper.Map<Movie>(movie);
+                _repository.MovieRepository.UpdateMovie(movieEntity);
                 var success = await _repository.SaveAsync();
 
                 if (!success)
