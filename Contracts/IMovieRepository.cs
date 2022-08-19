@@ -16,6 +16,6 @@ namespace Contracts
 
         void UpdateMovie(Movie movie);
 
-        void DeleteMovie(Movie movie);
+        void DeleteMovie(int id);
     }
 }

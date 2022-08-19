@@ -21,18 +21,17 @@ namespace Entities.Migrations
 
             modelBuilder.Entity("Entities.Models.Genre", b =>
                 {
-                    b.Property<int>("GenreId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("longtext");
 
-                    b.HasKey("GenreId");
+                    b.HasKey("Id");
 
-                    b.ToTable("Genre", (string)null);
+                    b.ToTable("Genre");
                 });
 
             modelBuilder.Entity("Entities.Models.Movie", b =>
@@ -47,13 +46,12 @@ namespace Entities.Migrations
                     b.Property<int>("GenreId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ReleaseDate")
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -61,7 +59,7 @@ namespace Entities.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("Movies", (string)null);
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("Entities.Models.MovieWorker", b =>
@@ -72,8 +70,7 @@ namespace Entities.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PictureUrl")
                         .IsRequired()
@@ -81,7 +78,7 @@ namespace Entities.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MovieWorker", (string)null);
+                    b.ToTable("MovieWorker");
                 });
 
             modelBuilder.Entity("MovieCast", b =>
@@ -96,7 +93,7 @@ namespace Entities.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("MovieCast", (string)null);
+                    b.ToTable("MovieCast");
                 });
 
             modelBuilder.Entity("Entities.Models.Movie", b =>

@@ -33,7 +33,7 @@ namespace Repositories
 
         public void CreateMovie(Movie movie) => Create(movie);
 
-        public void DeleteMovie(Movie movie) => Delete(movie);
+        public void DeleteMovie(int id) => Delete(new Movie() { Id = id });
 
         public void UpdateMovie(Movie movie) => Update(movie);
     }

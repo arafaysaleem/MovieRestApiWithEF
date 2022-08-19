@@ -2,7 +2,7 @@
 {
     public class GenreWithDetailsDto
     {
-        public int GenreId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public IEnumerable<MovieDto>? Movies { get; set; }
     }

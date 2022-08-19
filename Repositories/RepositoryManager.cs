@@ -6,7 +6,9 @@ namespace Repositories
     public class RepositoryManager : IRepositoryManager
     {
         private readonly MovieAppDbContext _dbContext;
-        private IMovieRepository _movie;
+        private IMovieRepository? _movie;
+        private IGenreRepository? _genre;
+        private IMovieWorkerRepository? _movieWorker;
 
         public RepositoryManager(MovieAppDbContext MovieAppDbContext)
         {
@@ -26,14 +28,40 @@ namespace Repositories
             }
         }
 
-        public async Task<bool> SaveAsync()
+        public IGenreRepository GenreRepository
         {
-            return (await _dbContext.SaveChangesAsync()) >= 0;
+            get
+            {
+                if (_genre == null)
+                {
+                    _genre = new GenreRepository(_dbContext);
+                }
+
+                return _genre;
+            }
         }
 
-        public bool Save()
+        public IMovieWorkerRepository MovieWorkerRepository
         {
-            return _dbContext.SaveChanges() >= 0;
+            get
+            {
+                if (_movieWorker == null)
+                {
+                    _movieWorker = new MovieWorkerRepository(_dbContext);
+                }
+
+                return _movieWorker;
+            }
+        }
+
+        public async Task SaveAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public void Save()
+        {
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -11,6 +11,9 @@ namespace Entities.RequestDtos
         [Required(ErrorMessage = "Genre id is required")]
         public int GenreId { get; set; }
 
+        [Required(ErrorMessage = "Release date is required")]
+        public DateTime ReleaseDate { get; set; }
+
         [Required(ErrorMessage = "Director id is required")]
         public int DirectorId { get; set; }
 

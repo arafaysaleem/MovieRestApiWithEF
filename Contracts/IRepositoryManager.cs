@@ -3,8 +3,9 @@
     public interface IRepositoryManager
     {
         public IMovieRepository MovieRepository { get; }
-        Task<bool> SaveAsync();
-
-        bool Save();
+        public IGenreRepository GenreRepository { get; }
+        public IMovieWorkerRepository MovieWorkerRepository { get; }
+        Task SaveAsync();
+        void Save();
     }
 }

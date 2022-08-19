@@ -11,12 +11,12 @@ namespace MovieRestApiWithEF.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IRepositoryManager _repository;
+        private readonly IRepositoryManager _repositoryManager;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
         public MoviesController(IRepositoryManager repositoryManager, ILoggerManager loggerManager, IMapper mapper)
         {
-            _repository = repositoryManager;
+            _repositoryManager = repositoryManager;
             _logger = loggerManager;
             _mapper = mapper;
         }
@@ -29,9 +29,11 @@ namespace MovieRestApiWithEF.Controllers
         {
             try
             {
-                var movies = await _repository.MovieRepository.GetAllMovies();
+                // Fetch all movies
+                var movies = await _repositoryManager.MovieRepository.GetAllMovies();
                 _logger.LogInfo($"Returned all movies from database.");
 
+                // Convert Model to Response DTO
                 var moviesResult = _mapper.Map<IEnumerable<MovieWithDetailsDto>>(movies);
                 return Ok(moviesResult);
             }
@@ -50,7 +52,10 @@ namespace MovieRestApiWithEF.Controllers
         {
             try
             {
-                var movie = await _repository.MovieRepository.GetMovieById(id);
+                // Fetch movie
+                var movie = await _repositoryManager.MovieRepository.GetMovieById(id);
+                
+                // Check if movie not exists
                 if (movie is null)
                 {
                     _logger.LogError($"Movie with id: {id}, hasn't been found in db.");
@@ -60,6 +65,7 @@ namespace MovieRestApiWithEF.Controllers
                 {
                     _logger.LogInfo($"Returned movie with id: {id}");
 
+                    // Convert Model to Response DTO
                     var movieResult = _mapper.Map<MovieWithDetailsDto>(movie);
                     return Ok(movieResult);
                 }
@@ -75,43 +81,51 @@ namespace MovieRestApiWithEF.Controllers
         /// Create a new movie
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] MovieUpdateDto movie)
+        public async Task<IActionResult> Post([FromBody] MovieCreateDto movieDto)
         {
             try
             {
-                if (movie is null)
+                // Check empty data from client
+                if (movieDto is null)
                 {
                     _logger.LogError("Movie object sent from client is null.");
                     return BadRequest("Movie object is null");
                 }
 
+                // Validate data from client
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError("Invalid movie object sent from client.");
                     return BadRequest("Invalid model object");
                 }
 
-                var movieFound = await _repository.MovieRepository.MovieExists(movie.Title);
-
+                // Check if already exists
+                var movieFound = await _repositoryManager.MovieRepository.MovieExists(movieDto.Title);
                 if (movieFound)
                 {
-                    _logger.LogError($"Movie with title \"{movie.Title}\" already exists in db.");
+                    _logger.LogError($"Movie with title \"{movieDto.Title}\" already exists in db.");
                     ModelState.AddModelError("", "Movie already Exist");
                     return StatusCode(500, ModelState);
                 }
 
-                var movieEntity = _mapper.Map<Movie>(movie);
-                _repository.MovieRepository.CreateMovie(movieEntity);
-                var success = await _repository.SaveAsync();
+                // Get Nested Models using Nested Ids From DTO
+                var cast = await _repositoryManager.MovieWorkerRepository
+                    .GetAllMovieWorkers(e => movieDto.CastIds.Contains(e.Id));
 
-                if (!success)
-                {
-                    ModelState.AddModelError("", $"Something went wrong while saving movie record of {movie.Title}");
-                    return StatusCode(500, ModelState);
-                }
+                // Convert Request DTO to EFCore Model
+                var movie = _mapper.Map<Movie>(movieDto);
+                
+                // Save Nested Models into Parent Model
+                movie.Cast = (ICollection<MovieWorker>) cast;
 
-                var createdMovie = _mapper.Map<MovieDto>(movieEntity);
+                // Create Movie
+                _repositoryManager.MovieRepository.CreateMovie(movie);
+                await _repositoryManager.SaveAsync();
 
+                // Convert created movie to a Response DTO
+                var createdMovie = _mapper.Map<MovieWithDetailsDto>(movie);
+
+                // Send response along with the location of the newly created resource and its id
                 return CreatedAtAction(nameof(GetOne), new { id = createdMovie.Id }, createdMovie);
             }
             catch (Exception ex)
@@ -127,38 +141,47 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpPut("{movieId:int}")]
-        public async Task<IActionResult> Update(int movieId, [FromBody] MovieUpdateDto movie)
+        public async Task<IActionResult> Update(int movieId, [FromBody] MovieCreateDto movie)
         {
             try
             {
+                // Check empty data from client
                 if (movie is null)
                 {
                     _logger.LogError("Movie object sent from client is null.");
                     return BadRequest("Movie object is null");
                 }
+
+                // Validate data from client
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError("Invalid movie object sent from client.");
                     return BadRequest("Invalid model object");
                 }
 
-                var movieExists = await _repository.MovieRepository.MovieExists(movieId);
+                // Check if already exists
+                var movieExists = await _repositoryManager.MovieRepository.MovieExists(movieId);
                 if (!movieExists)
                 {
                     _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
                     return NotFound();
                 }
 
+                // Convert Request DTO to EFCore Model
                 var movieEntity = _mapper.Map<Movie>(movie);
-                _repository.MovieRepository.UpdateMovie(movieEntity);
-                var success = await _repository.SaveAsync();
 
-                if (!success)
-                {
-                    ModelState.AddModelError("", $"Something went wrong while updating movie : {movie.Title}");
-                    return StatusCode(500, ModelState);
-                }
+                // Get Nested Models using Nested Ids From DTO
+                var cast = await _repositoryManager.MovieWorkerRepository
+                    .GetAllMovieWorkers(e => movie.CastIds.Contains(e.Id));
 
+                // Save Nested Models into Parent Model
+                movieEntity.Cast = (ICollection<MovieWorker>)cast;
+
+                // Update movie
+                _repositoryManager.MovieRepository.UpdateMovie(movieEntity);
+                await _repositoryManager.SaveAsync();
+
+                // return 204 response
                 return NoContent();
             }
             catch (Exception ex)
@@ -177,23 +200,19 @@ namespace MovieRestApiWithEF.Controllers
         {
             try
             {
-                var movieExists = await _repository.MovieRepository.MovieExists(movieId);
+                // Check if movie exists
+                var movieExists = await _repositoryManager.MovieRepository.MovieExists(movieId);
                 if (!movieExists)
                 {
                     _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
                     return NotFound();
                 }
 
-                var movieObj = await _repository.MovieRepository.GetMovieById(movieId);
-                _repository.MovieRepository.DeleteMovie(movieObj!);
-                var success = await _repository.SaveAsync();
+                // Delete movie
+                _repositoryManager.MovieRepository.DeleteMovie(movieId);
+                await _repositoryManager.SaveAsync();
 
-                if (!success)
-                {
-                    ModelState.AddModelError("", $"Something went wrong while deleting movie : {movieObj!.Title}");
-                    return StatusCode(500, ModelState);
-                }
-
+                // Return 204 response
                 return NoContent();
             }
             catch (Exception ex)
