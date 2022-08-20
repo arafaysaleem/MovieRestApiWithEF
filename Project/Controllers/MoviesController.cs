@@ -54,7 +54,7 @@ namespace MovieRestApiWithEF.Controllers
             {
                 // Fetch movie
                 var movie = await _repositoryManager.MovieRepository.GetMovieById(id);
-                
+
                 // Check if movie not exists
                 if (movie is null)
                 {
@@ -110,13 +110,13 @@ namespace MovieRestApiWithEF.Controllers
 
                 // Get Nested Models using Nested Ids From DTO
                 var cast = await _repositoryManager.MovieWorkerRepository
-                    .GetAllMovieWorkers(e => movieDto.CastIds.Contains(e.Id));
+                    .GetAllMovieWorkers(e => movieDto.CastIds.Contains(e.Id), tracking: true);
 
                 // Convert Request DTO to EFCore Model
                 var movie = _mapper.Map<Movie>(movieDto);
-                
+
                 // Save Nested Models into Parent Model
-                movie.Cast = (ICollection<MovieWorker>) cast;
+                movie.Cast = (ICollection<MovieWorker>)cast;
 
                 // Create Movie
                 _repositoryManager.MovieRepository.CreateMovie(movie);
