@@ -13,16 +13,27 @@ namespace Repositories
             DbContext = MovieAppDbContext;
         }
 
-        public IQueryable<T> FindAll() => DbContext.Set<T>().AsNoTracking();
+        public IQueryable<T> FindAll(bool tracking = default)
+        {
+            var entities = DbContext.Set<T>();
+            return tracking ? entities : entities.AsNoTracking();
+        }
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) =>
-            DbContext.Set<T>().Where(expression).AsNoTracking();
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool tracking = default)
+        {
+            var entities = DbContext.Set<T>().Where(expression);
+            return tracking ? entities : entities.AsNoTracking();
+        }
 
-        public bool Exists(Expression<Func<T, bool>> expression) =>
-            DbContext.Set<T>().AsNoTracking().Any(expression);
+        public bool Exists(Expression<Func<T, bool>> expression)
+        {
+            return DbContext.Set<T>().AsNoTracking().Any(expression);
+        }
 
-        public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression) =>
-            DbContext.Set<T>().AsNoTracking().AnyAsync(expression);
+        public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
+        {
+            return DbContext.Set<T>().AsNoTracking().AnyAsync(expression);
+        }
 
         public void Create(T entity) => DbContext.Set<T>().Add(entity);
 

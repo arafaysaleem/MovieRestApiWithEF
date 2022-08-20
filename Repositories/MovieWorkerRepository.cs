@@ -10,9 +10,12 @@ namespace Repositories
     {
         public MovieWorkerRepository(MovieAppDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(Expression<Func<MovieWorker, bool>>? condition, bool details)
+        public async Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(
+            Expression<Func<MovieWorker, bool>>? condition,
+            bool details,
+            bool tracking)
         {
-            var results = condition is null ? FindAll() : FindByCondition(condition);
+            var results = condition is null ? FindAll(tracking: tracking) : FindByCondition(condition, tracking: tracking);
 
             if (details)
             {
