@@ -4,8 +4,8 @@ namespace Contracts
 {
     public interface IRepositoryBase<T>
     {
-        IQueryable<T> FindAll();
-        IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
+        IQueryable<T> FindAll(bool tracking = false);
+        IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool tracking = false);
         bool Exists(Expression<Func<T, bool>> expression);
         public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
         void Create(T entity);

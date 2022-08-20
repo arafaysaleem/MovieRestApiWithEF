@@ -5,7 +5,11 @@ namespace Contracts
 {
     public interface IMovieWorkerRepository
     {
-        Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(Expression<Func<MovieWorker, bool>>? condition = null, bool details = false);
+        Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(
+            Expression<Func<MovieWorker, bool>>? condition = null,
+            bool details = false,
+            bool tracking = false
+        );
 
         Task<MovieWorker?> GetMovieWorkerById(int id);
 
