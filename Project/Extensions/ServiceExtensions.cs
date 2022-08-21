@@ -5,6 +5,7 @@ using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using NLog;
 using Repositories;
 using System.Text;
@@ -70,7 +71,7 @@ namespace MovieRestApiWithEF.Extensions
         {
             var jwtTokenConfig = configuration.GetSection("jwt").Get<JwtTokenConfig>();
             services.AddSingleton(jwtTokenConfig);
-            services.AddScoped<JwtService>();
+            services.AddScoped<IJwtService, JwtService>();
         }
 
         public static void ConfigureRepositoryManager(this IServiceCollection services)
@@ -84,15 +85,27 @@ namespace MovieRestApiWithEF.Extensions
             var jwtTokenConfig = configuration.GetSection("jwt").Get<JwtTokenConfig>();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.Secret));
 
-            services.AddAuthentication(x =>
+            // This registers an authentication service along with the authentication options.
+            //
+            // The chained method decides how the authentication service will work internally. For this we add
+            // a JWT Bearer Handler in our app as the handler for the authentication. This validates tokens from
+            // all incoming requests.
+            //
+            // This handler internally invokes the AuthenticateAsync method of JWT Bearer with the provided validation params.
+            // Once the token is validated, the User(ClaimsPrinciple) is automatically added to the context and can be
+            // accessed in the controller using User.Identity or HttpContext.User.Claims
+            services.AddAuthentication(authOptions =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
+                // To decide how to construct user identity in case of successful authentication
+                authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+                // To decide how to check auth header exists and return 401 if it is missing
+                authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwtBearerOptions =>
             {
-                x.RequireHttpsMetadata = true;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                jwtBearerOptions.RequireHttpsMetadata = true;
+                jwtBearerOptions.SaveToken = true;
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -106,6 +119,45 @@ namespace MovieRestApiWithEF.Extensions
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = key
                 };
+            });
+        }
+
+        public static void AddSwaggerGenWithAuth(this IServiceCollection services)
+        {
+            var version = "v1";
+            services.AddSwaggerGen(options =>
+            {
+                // This is to generate the Default UI of Swagger Documentation  
+                options.SwaggerDoc(version, new OpenApiInfo
+                {
+                    Version = version,
+                    Title = "Movie App REST API",
+                    Description = "ASP.NET 6 Web API"
+                });
+
+                var authScheme = JwtBearerDefaults.AuthenticationScheme;
+                var bearerFormat = "JWT";
+                var headerName = "Authorization";
+
+                // To Enable authorization using Swagger (JWT)  
+                options.AddSecurityDefinition(authScheme, new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Name = headerName,
+                    Scheme = authScheme,
+                    BearerFormat = bearerFormat,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                });
+
+                var reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = authScheme };
+                var openApiScheme = new OpenApiSecurityScheme { Reference = reference };
+                
+                // Adds the auth header globally on all requests
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { openApiScheme, new string[] {} }
+                });
             });
         }
     }

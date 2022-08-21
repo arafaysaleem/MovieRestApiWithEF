@@ -8,6 +8,8 @@ namespace Contracts
 
         Task<User?> GetUserById(int id);
 
+        Task<User?> GetUserByEmail(string email);
+
         Task<bool> UserExists(string Email);
 
         Task<bool> UserExists(int id);

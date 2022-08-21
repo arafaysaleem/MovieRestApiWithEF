@@ -1,6 +1,4 @@
-﻿using Entities.Models;
-
-namespace Entities.ResponseDtos
+﻿namespace Entities.ResponseDtos
 {
     public class AuthenticatedResponse
     {
@@ -9,6 +7,6 @@ namespace Entities.ResponseDtos
 
         public string Token { get; set; }
 
-        public UserRole Role { get; set; }
+        public string Role { get; set; }
     }
 }

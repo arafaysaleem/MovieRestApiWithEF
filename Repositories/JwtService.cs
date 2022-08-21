@@ -20,7 +20,7 @@ namespace Repositories
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role.ToString())
             };
@@ -49,7 +49,7 @@ namespace Repositories
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public ClaimsPrincipal GetClaimsPrincipalFromToken(string token)
+        public ClaimsPrincipal ValidateToken(string token)
         {
             // Create signed key for matching with token key
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenConfig.Secret));

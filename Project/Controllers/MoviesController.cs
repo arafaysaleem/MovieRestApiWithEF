@@ -3,12 +3,14 @@ using Contracts;
 using Entities.Models;
 using Entities.RequestDtos;
 using Entities.ResponseDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieRestApiWithEF.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MoviesController : ControllerBase
     {
         private readonly IRepositoryManager _repositoryManager;

@@ -5,8 +5,8 @@ namespace Contracts
 {
     public interface IJwtService
     {
-        public string BuildToken(User user);
+        string BuildToken(User user);
 
-        public ClaimsPrincipal GetClaimsPrincipalFromToken(string token);
+        ClaimsPrincipal ValidateToken(string token);
     }
 }

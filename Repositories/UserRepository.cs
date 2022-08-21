@@ -20,6 +20,12 @@ namespace Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await FindByCondition(e => e.Email.Equals(email))
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> UserExists(string email) => await ExistsAsync(o => o.Email.Equals(email));
 
         public async Task<bool> UserExists(int id) => await ExistsAsync(o => o.Id.Equals(id));

@@ -1,27 +1,25 @@
-using Contracts;
-using Entities.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using MovieRestApiWithEF.Extensions;
-using Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.ConfigureDbContext(configuration); // for initializing and injecting database provider
-builder.Services.ConfigureJwtService(configuration); // for setting up jwt helpers and injecting it
+builder.Services.ConfigureDbContext(configuration); // For initializing and injecting database provider
+builder.Services.ConfigureJwtService(configuration); // For setting up jwt helpers and injecting it
 
 var policyName = "CorsPolicy";
-builder.Services.ConfigureCors(policyName); // for HTTP request control
-builder.Services.ConfigureIISIntegration(); // for server configuration
-builder.Services.ConfigureLoggerService(); // for logging all requests, responses and errors
-builder.Services.ConfigureRepositoryManager(); // for initiating an IoC container with instances of all repositories
+builder.Services.ConfigureCors(policyName); // For HTTP request control
+builder.Services.ConfigureIISIntegration(); // For server configuration
+builder.Services.ConfigureLoggerService(); // For logging all requests, responses and errors
+builder.Services.ConfigureRepositoryManager(); // For initiating an IoC container with instances of all repositories
 
-builder.Services.AddAutoMapper(typeof(Program)); // for auto mapping of DTOs to Models and vice versa
-
-builder.Services.AddJwtAuthentication(configuration);
+// Read here for understanding Authentication in .NET Core
+// https://docs.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-6.0
+builder.Services.AddJwtAuthentication(configuration); // For adding an authentication service along with a handler
+builder.Services.AddAutoMapper(typeof(Program)); // For auto mapping of DTOs to Models and vice versa
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // for adding swagger support
+builder.Services.AddSwaggerGenWithAuth(); // For adding swagger support
 
 var app = builder.Build();
 
@@ -29,8 +27,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); // for getting a swagger interactive documentation
-    app.UseDeveloperExceptionPage(); // for unhandled exceptions
+    app.UseSwaggerUI(); // For getting a swagger interactive documentation
+    app.UseDeveloperExceptionPage(); // For unhandled exceptions
 }
 else
 {
@@ -42,12 +40,15 @@ app.UseHttpsRedirection();
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.All
-}); // for forwarding headers from a proxy to the main server
+}); // For forwarding headers from a proxy to the main server
 
-app.UseCors(policyName); // to enable cors using our previously configured policy
+app.UseCors(policyName); // To enable cors using our previously configured policy
 
-app.UseAuthorization(); // to enable role based access to actions
+app.UseAuthentication(); // To add a middleware that validates requests using the initially added auth service
 
-app.MapControllers(); // to map controller to routes
+// To enable role based access to actions. Reads ClaimsPrinciple from previous middleware to check if authorized
+app.UseAuthorization();
+
+app.MapControllers(); // To map controller to routes
 
 app.Run();
