@@ -1,9 +1,13 @@
 ﻿using Contracts;
 using Entities;
+using Entities.Models;
 using LoggerService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NLog;
 using Repositories;
+using System.Text;
 
 namespace MovieRestApiWithEF.Extensions
 {
@@ -62,10 +66,47 @@ namespace MovieRestApiWithEF.Extensions
             services.AddSingleton<ILoggerManager, LoggerManager>();
         }
 
+        public static void ConfigureJwtService(this IServiceCollection services, ConfigurationManager configuration)
+        {
+            var jwtTokenConfig = configuration.GetSection("jwt").Get<JwtTokenConfig>();
+            services.AddSingleton(jwtTokenConfig);
+            services.AddScoped<JwtService>();
+        }
+
         public static void ConfigureRepositoryManager(this IServiceCollection services)
         {
             // Inject an IoC repository container into app that manages access to all repositories
             services.AddScoped<IRepositoryManager, RepositoryManager>();
+        }
+
+        public static void AddJwtAuthentication(this IServiceCollection services, ConfigurationManager configuration)
+        {
+            var jwtTokenConfig = configuration.GetSection("jwt").Get<JwtTokenConfig>();
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.Secret));
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = true;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ValidAudience = jwtTokenConfig.Audience,
+                    ValidIssuer = jwtTokenConfig.Issuer,
+                    RequireSignedTokens = true,
+                    RequireAudience = true,
+                    RequireExpirationTime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    IssuerSigningKey = key
+                };
+            });
         }
     }
 }

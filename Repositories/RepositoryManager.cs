@@ -9,6 +9,7 @@ namespace Repositories
         private IMovieRepository? _movie;
         private IGenreRepository? _genre;
         private IMovieWorkerRepository? _movieWorker;
+        private IUserRepository? _user;
 
         public RepositoryManager(MovieAppDbContext MovieAppDbContext)
         {
@@ -25,6 +26,19 @@ namespace Repositories
                 }
 
                 return _movie;
+            }
+        }
+
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                if (_user == null)
+                {
+                    _user = new UserRepository(_dbContext);
+                }
+
+                return _user;
             }
         }
 

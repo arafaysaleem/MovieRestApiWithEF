@@ -5,12 +5,16 @@ namespace Entities
 {
     public class MovieAppDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
 
         public MovieAppDbContext(DbContextOptions<MovieAppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Applies settings for user table, its relationships, properties and seeder data
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+
             modelBuilder
                 .Entity<Movie>()
                 .HasOne(e => e.Director)

@@ -8,7 +8,7 @@ namespace Contracts
 
         Task<Movie?> GetMovieById(int id);
 
-        Task<bool> MovieExists(String Title);
+        Task<bool> MovieExists(string Title);
 
         Task<bool> MovieExists(int id);
 

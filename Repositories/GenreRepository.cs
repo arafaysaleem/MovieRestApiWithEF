@@ -33,7 +33,7 @@ namespace Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> GenreExists(String name) => await ExistsAsync(o => o.Name.Equals(name));
+        public async Task<bool> GenreExists(string name) => await ExistsAsync(o => o.Name.Equals(name));
 
         public async Task<bool> GenreExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
 

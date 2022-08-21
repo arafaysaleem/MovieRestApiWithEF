@@ -10,7 +10,7 @@ namespace Contracts
 
         Task<Genre?> GetGenreMovies(int id);
 
-        Task<bool> GenreExists(String Name);
+        Task<bool> GenreExists(string Name);
 
         Task<bool> GenreExists(int id);
 

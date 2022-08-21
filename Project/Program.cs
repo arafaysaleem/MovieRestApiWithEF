@@ -1,4 +1,5 @@
 using Contracts;
+using Entities.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using MovieRestApiWithEF.Extensions;
 using Repositories;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.ConfigureDbContext(configuration); // for initializing and injecting database provider
+builder.Services.ConfigureJwtService(configuration); // for setting up jwt helpers and injecting it
 
 var policyName = "CorsPolicy";
 builder.Services.ConfigureCors(policyName); // for HTTP request control
@@ -15,6 +17,8 @@ builder.Services.ConfigureLoggerService(); // for logging all requests, response
 builder.Services.ConfigureRepositoryManager(); // for initiating an IoC container with instances of all repositories
 
 builder.Services.AddAutoMapper(typeof(Program)); // for auto mapping of DTOs to Models and vice versa
+
+builder.Services.AddJwtAuthentication(configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // for adding swagger support

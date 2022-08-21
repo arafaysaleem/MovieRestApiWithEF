@@ -27,7 +27,7 @@ namespace Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> MovieExists(String title) => await ExistsAsync(o => o.Title.Equals(title));
+        public async Task<bool> MovieExists(string title) => await ExistsAsync(o => o.Title.Equals(title));
 
         public async Task<bool> MovieExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
 
