@@ -10,7 +10,6 @@ namespace MovieRestApiWithEF.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class MoviesController : ControllerBase
     {
         private readonly IRepositoryManager _repositoryManager;
@@ -83,6 +82,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Create a new movie
         /// </summary>
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Post([FromBody] MovieCreateDto movieDto)
         {
             try
@@ -143,6 +143,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpPut("{movieId:int}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(int movieId, [FromBody] MovieCreateDto movie)
         {
             try
@@ -171,10 +172,11 @@ namespace MovieRestApiWithEF.Controllers
 
                 // Convert Request DTO to EFCore Model
                 var movieEntity = _mapper.Map<Movie>(movie);
+                movieEntity.Id = movieId;
 
                 // Get Nested Models using Nested Ids From DTO
                 var cast = await _repositoryManager.MovieWorkerRepository
-                    .GetAllMovieWorkers(e => movie.CastIds.Contains(e.Id));
+                    .GetAllMovieWorkers(e => movie.CastIds.Contains(e.Id), tracking: true);
 
                 // Save Nested Models into Parent Model
                 movieEntity.Cast = (ICollection<MovieWorker>)cast;
@@ -198,6 +200,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpDelete("{movieId:int}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int movieId)
         {
             try

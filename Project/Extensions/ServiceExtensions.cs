@@ -3,6 +3,7 @@ using Entities;
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -152,12 +153,27 @@ namespace MovieRestApiWithEF.Extensions
 
                 var reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = authScheme };
                 var openApiScheme = new OpenApiSecurityScheme { Reference = reference };
-                
+
                 // Adds the auth header globally on all requests
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     { openApiScheme, new string[] {} }
                 });
+            });
+        }
+
+        public static void AddRoleBasedAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                // To check authentication on all routes without need for [Authorize] attributes 
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                // To allow admin only on specified routes
+                options.AddPolicy("AdminOnly",
+                     policy => policy.RequireRole(UserRole.Admin.Name()));
             });
         }
     }

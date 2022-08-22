@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Models;
 using Entities.RequestDtos;
 using Entities.ResponseDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieRestApiWithEF.Controllers
@@ -120,6 +121,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Create a new genre
         /// </summary>
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Post([FromBody] GenreCreateDto genre)
         {
             try
@@ -173,6 +175,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpPut("{genreId:int}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(int genreId, [FromBody] GenreCreateDto genre)
         {
             try
@@ -201,6 +204,7 @@ namespace MovieRestApiWithEF.Controllers
 
                 // Convert Request DTO to Model
                 var genreEntity = _mapper.Map<Genre>(genre);
+                genreEntity.Id = genreId;
                 
                 // Update model
                 _repositoryManager.GenreRepository.UpdateGenre(genreEntity);
@@ -221,6 +225,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpDelete("{genreId:int}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int genreId)
         {
             try

@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Models;
 using Entities.RequestDtos;
 using Entities.ResponseDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieRestApiWithEF.Controllers
@@ -120,6 +121,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Create a new movie worker
         /// </summary>
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Post([FromBody] MovieWorkerCreateDto movieWorker)
         {
             try
@@ -163,6 +165,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpPut("{movieWorkerId:int}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Update(int movieWorkerId, [FromBody] MovieWorkerCreateDto movieWorker)
         {
             try
@@ -191,7 +194,8 @@ namespace MovieRestApiWithEF.Controllers
 
                 // Convert Request DTO to Model
                 var movieWorkerEntity = _mapper.Map<MovieWorker>(movieWorker);
-                
+                movieWorkerEntity.Id = movieWorkerId;
+
                 // Update model
                 _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorkerEntity);
                 await _repositoryManager.SaveAsync();
@@ -211,6 +215,7 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         /// <return></return>
         [HttpDelete("{movieWorkerId:int}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int movieWorkerId)
         {
             try

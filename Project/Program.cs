@@ -16,6 +16,7 @@ builder.Services.ConfigureRepositoryManager(); // For initiating an IoC containe
 // Read here for understanding Authentication in .NET Core
 // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-6.0
 builder.Services.AddJwtAuthentication(configuration); // For adding an authentication service along with a handler
+builder.Services.AddRoleBasedAuthorization(); // For adding authorization to all controllers and setup role policies
 builder.Services.AddAutoMapper(typeof(Program)); // For auto mapping of DTOs to Models and vice versa
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
