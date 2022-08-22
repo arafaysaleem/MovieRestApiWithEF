@@ -42,7 +42,7 @@ namespace Repositories
                     audience: _jwtTokenConfig.Audience, // Who receives the token
                     notBefore: DateTime.Now, // The starting DateTime from which the token is valid
                     claims: BuildClaims(user), // Custom object encoded in the payload, contains Id, userRole etc.
-                    expires: DateTime.Now.AddMinutes(_jwtTokenConfig.AccessTokenExpiration), // Expiration after which token is invalid
+                    expires: DateTime.Now.AddHours(_jwtTokenConfig.AccessTokenExpiration), // Expiration after which token is invalid
                     signingCredentials: creds); // Signature used to validate the token
 
             // Create and return a string representation of token using tokenOptions
