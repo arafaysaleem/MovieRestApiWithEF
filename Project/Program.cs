@@ -9,7 +9,6 @@ builder.Services.ConfigureJwtService(configuration); // For setting up jwt helpe
 
 var policyName = "CorsPolicy";
 builder.Services.ConfigureCors(policyName); // For HTTP request control
-builder.Services.ConfigureIISIntegration(); // For server configuration
 builder.Services.ConfigureLoggerService(); // For logging all requests, responses and errors
 builder.Services.ConfigureRepositoryManager(); // For initiating an IoC container with instances of all repositories
 
@@ -37,11 +36,6 @@ else
 }
 
 app.UseHttpsRedirection();
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.All
-}); // For forwarding headers from a proxy to the main server
 
 app.UseCors(policyName); // To enable cors using our previously configured policy
 
