@@ -24,7 +24,7 @@ namespace Entities.Models
 
             builder.HasData(
                 new User { Id = 1, Email = "apiuser@gmail.com", Password = "apiuser", Role = UserRole.ApiUser },
-                new User { Id = 2, Email = "admin@gmail.con", Password = "admin", Role = UserRole.Admin }
+                new User { Id = 2, Email = "admin@gmail.com", Password = "admin", Role = UserRole.Admin }
             );
         }
     }
