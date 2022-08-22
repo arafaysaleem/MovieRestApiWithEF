@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.RequestDtos
+namespace Entities.Requests
 {
-    public class MovieWorkerCreateDto
+    public class MovieWorkerCreateRequest
     {
         [Required(ErrorMessage = "Worker fullname is required")]
         [StringLength(30, ErrorMessage = "Name can't be longer than 30 characters")]

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
-using Entities.RequestDtos;
-using Entities.ResponseDtos;
+using Entities.Requests;
+using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +35,7 @@ namespace MovieRestApiWithEF.Controllers
                 _logger.LogInfo($"Returned all MovieWorkers from database.");
 
                 // Convert Models to Response DTO
-                var movieWorkersResult = _mapper.Map<IEnumerable<MovieWorkerDto>>(movieWorkers);
+                var movieWorkersResult = _mapper.Map<IEnumerable<MovieWorkerResponse>>(movieWorkers);
 
                 // Send response with 200 OK
                 return Ok(movieWorkersResult);
@@ -57,7 +57,7 @@ namespace MovieRestApiWithEF.Controllers
             {
                 // Fetch model from db
                 var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerById(id);
-                
+
                 // Check if model not found
                 if (movieWorker is null)
                 {
@@ -69,7 +69,7 @@ namespace MovieRestApiWithEF.Controllers
                     _logger.LogInfo($"Returned movie worker with id: {id}");
 
                     // Convert Model to Response DTO
-                    var movieWorkerResult = _mapper.Map<MovieWorkerDto>(movieWorker);
+                    var movieWorkerResult = _mapper.Map<MovieWorkerResponse>(movieWorker);
 
                     // Send response with 200 OK
                     return Ok(movieWorkerResult);
@@ -92,7 +92,7 @@ namespace MovieRestApiWithEF.Controllers
             {
                 // Fetch model with nested details from db
                 var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerMovies(id);
-                
+
                 // Check if model not found
                 if (movieWorker is null)
                 {
@@ -104,7 +104,7 @@ namespace MovieRestApiWithEF.Controllers
                     _logger.LogInfo($"Returned movie worker with id: {id}");
 
                     // Convert Model to Response DTO
-                    var movieWorkerResult = _mapper.Map<MovieWorkerWithDetailsDto>(movieWorker);
+                    var movieWorkerResult = _mapper.Map<MovieWorkerWithDetailsResponse>(movieWorker);
 
                     // Send response with 200 OK
                     return Ok(movieWorkerResult);
@@ -122,12 +122,12 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Post([FromBody] MovieWorkerCreateDto movieWorker)
+        public async Task<IActionResult> Post([FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
             try
             {
                 // Check if data from client is missing
-                if (movieWorker is null)
+                if (movieWorkerReq is null)
                 {
                     _logger.LogError("Movie worker object sent from client is null.");
                     return BadRequest("Movie worker object is null");
@@ -141,17 +141,17 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Convert Request DTO to Model
-                var movieWorkerEntity = _mapper.Map<MovieWorker>(movieWorker);
-                
+                var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
+
                 // Create Movie Worker
-                _repositoryManager.MovieWorkerRepository.CreateMovieWorker(movieWorkerEntity);
+                _repositoryManager.MovieWorkerRepository.CreateMovieWorker(movieWorker);
                 await _repositoryManager.SaveAsync();
 
                 // Convert newly created Model to Response DTO
-                var createdMovieWorker = _mapper.Map<MovieWorkerDto>(movieWorkerEntity);
+                var movieWorkerResponse = _mapper.Map<MovieWorkerResponse>(movieWorker);
 
                 // Send model with status 201 Created and location of newly created resource and its id
-                return CreatedAtAction(nameof(GetOne), new { id = createdMovieWorker.Id }, createdMovieWorker);
+                return CreatedAtAction(nameof(GetOne), new { id = movieWorkerResponse.Id }, movieWorkerResponse);
             }
             catch (Exception ex)
             {
@@ -166,12 +166,12 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpPut("{movieWorkerId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Update(int movieWorkerId, [FromBody] MovieWorkerCreateDto movieWorker)
+        public async Task<IActionResult> Update(int movieWorkerId, [FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
             try
             {
                 // Check if data from client is missing
-                if (movieWorker is null)
+                if (movieWorkerReq is null)
                 {
                     _logger.LogError("Movie worker object sent from client is null.");
                     return BadRequest("Movie worker object is null");
@@ -185,7 +185,9 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Check if movie exists in db
-                var movieWorkerExists = await _repositoryManager.MovieWorkerRepository.MovieWorkerExists(movieWorkerId);
+                var movieWorkerExists = await _repositoryManager
+                    .MovieWorkerRepository
+                    .MovieWorkerExists(movieWorkerId);
                 if (!movieWorkerExists)
                 {
                     _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
@@ -193,11 +195,11 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Convert Request DTO to Model
-                var movieWorkerEntity = _mapper.Map<MovieWorker>(movieWorker);
-                movieWorkerEntity.Id = movieWorkerId;
+                var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
+                movieWorker.Id = movieWorkerId;
 
                 // Update model
-                _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorkerEntity);
+                _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorker);
                 await _repositoryManager.SaveAsync();
 
                 // Send 204 response

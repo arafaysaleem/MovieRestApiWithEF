@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
-using Entities.RequestDtos;
-using Entities.ResponseDtos;
+using Entities.Requests;
+using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +35,7 @@ namespace MovieRestApiWithEF.Controllers
                 _logger.LogInfo($"Returned all movies from database.");
 
                 // Convert Model to Response DTO
-                var moviesResult = _mapper.Map<IEnumerable<MovieWithDetailsDto>>(movies);
+                var moviesResult = _mapper.Map<IEnumerable<MovieWithDetailsResponse>>(movies);
                 return Ok(moviesResult);
             }
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace MovieRestApiWithEF.Controllers
                     _logger.LogInfo($"Returned movie with id: {id}");
 
                     // Convert Model to Response DTO
-                    var movieResult = _mapper.Map<MovieWithDetailsDto>(movie);
+                    var movieResult = _mapper.Map<MovieWithDetailsResponse>(movie);
                     return Ok(movieResult);
                 }
             }
@@ -83,12 +83,12 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Post([FromBody] MovieCreateDto movieDto)
+        public async Task<IActionResult> Post([FromBody] MovieCreateRequest movieReq)
         {
             try
             {
                 // Check empty data from client
-                if (movieDto is null)
+                if (movieReq is null)
                 {
                     _logger.LogError("Movie object sent from client is null.");
                     return BadRequest("Movie object is null");
@@ -102,20 +102,20 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Check if already exists
-                var movieFound = await _repositoryManager.MovieRepository.MovieExists(movieDto.Title);
+                var movieFound = await _repositoryManager.MovieRepository.MovieExists(movieReq.Title);
                 if (movieFound)
                 {
-                    _logger.LogError($"Movie with title \"{movieDto.Title}\" already exists in db.");
+                    _logger.LogError($"Movie with title \"{movieReq.Title}\" already exists in db.");
                     ModelState.AddModelError("", "Movie already Exist");
                     return StatusCode(500, ModelState);
                 }
 
                 // Get Nested Models using Nested Ids From DTO
                 var cast = await _repositoryManager.MovieWorkerRepository
-                    .GetAllMovieWorkers(e => movieDto.CastIds.Contains(e.Id), tracking: true);
+                    .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
                 // Convert Request DTO to EFCore Model
-                var movie = _mapper.Map<Movie>(movieDto);
+                var movie = _mapper.Map<Movie>(movieReq);
 
                 // Save Nested Models into Parent Model
                 movie.Cast = (ICollection<MovieWorker>)cast;
@@ -125,10 +125,10 @@ namespace MovieRestApiWithEF.Controllers
                 await _repositoryManager.SaveAsync();
 
                 // Convert created movie to a Response DTO
-                var createdMovie = _mapper.Map<MovieWithDetailsDto>(movie);
+                var movieResponse = _mapper.Map<MovieWithDetailsResponse>(movie);
 
                 // Send response along with the location of the newly created resource and its id
-                return CreatedAtAction(nameof(GetOne), new { id = createdMovie.Id }, createdMovie);
+                return CreatedAtAction(nameof(GetOne), new { id = movieResponse.Id }, movieResponse);
             }
             catch (Exception ex)
             {
@@ -144,12 +144,12 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpPut("{movieId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Update(int movieId, [FromBody] MovieCreateDto movie)
+        public async Task<IActionResult> Update(int movieId, [FromBody] MovieCreateRequest movieReq)
         {
             try
             {
                 // Check empty data from client
-                if (movie is null)
+                if (movieReq is null)
                 {
                     _logger.LogError("Movie object sent from client is null.");
                     return BadRequest("Movie object is null");
@@ -171,12 +171,12 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Convert Request DTO to EFCore Model
-                var movieEntity = _mapper.Map<Movie>(movie);
+                var movieEntity = _mapper.Map<Movie>(movieReq);
                 movieEntity.Id = movieId;
 
                 // Get Nested Models using Nested Ids From DTO
                 var cast = await _repositoryManager.MovieWorkerRepository
-                    .GetAllMovieWorkers(e => movie.CastIds.Contains(e.Id), tracking: true);
+                    .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
                 // Save Nested Models into Parent Model
                 movieEntity.Cast = (ICollection<MovieWorker>)cast;

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Entities.Models;
-using Entities.RequestDtos;
-using Entities.ResponseDtos;
+using Entities.Requests;
+using Entities.Responses;
 
 namespace MovieRestApiWithEF
 {
@@ -10,33 +10,33 @@ namespace MovieRestApiWithEF
         public MappingProfile()
         {
             // To map EFCore model to Movie response
-            CreateMap<Movie, MovieDto>();
+            CreateMap<Movie, MovieResponse>();
 
             // To map EFCore model to Movie with nested properties response
-            CreateMap<Movie, MovieWithDetailsDto>();
+            CreateMap<Movie, MovieWithDetailsResponse>();
 
             // To map request movie body to Movie EFCore model
-            CreateMap<MovieCreateDto, Movie>();
+            CreateMap<MovieCreateRequest, Movie>();
 
 
             // To map EFCore model to Movie response
-            CreateMap<Genre, GenreDto>();
+            CreateMap<Genre, GenreResponse>();
 
             // To map EFCore model to Movie with nested properties response
-            CreateMap<Genre, GenreWithDetailsDto>();
+            CreateMap<Genre, GenreWithDetailsResponse>();
 
             // To map request movie body to Movie EFCore model
-            CreateMap<GenreCreateDto, Genre>();
+            CreateMap<GenreCreateRequest, Genre>();
 
 
             // To map EFCore model to Movie response
-            CreateMap<MovieWorker, MovieWorkerDto>();
+            CreateMap<MovieWorker, MovieWorkerResponse>();
 
             // To map EFCore model to Movie with nested properties response
-            CreateMap<MovieWorker, MovieWorkerWithDetailsDto>();
+            CreateMap<MovieWorker, MovieWorkerWithDetailsResponse>();
 
             // To map request movie body to Movie EFCore model
-            CreateMap<MovieWorkerCreateDto, MovieWorker>();
+            CreateMap<MovieWorkerCreateRequest, MovieWorker>();
 
         }
     }

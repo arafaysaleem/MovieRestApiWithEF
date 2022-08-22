@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.RequestDtos
+namespace Entities.Requests
 {
-    public class LoginDto
+    public class LoginRequest
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]

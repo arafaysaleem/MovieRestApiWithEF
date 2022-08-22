@@ -1,4 +1,4 @@
-﻿namespace Entities.ResponseDtos
+﻿namespace Entities.Responses
 {
     public class AuthenticatedResponse
     {

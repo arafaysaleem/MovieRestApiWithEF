@@ -1,5 +1,5 @@
 ﻿using Contracts;
-using Entities.RequestDtos;
+using Entities.Requests;
 using Entities.ResponseDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,12 +29,12 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginReq)
         {
             try
             {
                 // Check if data from client is missing
-                if (loginDto is null)
+                if (loginReq is null)
                 {
                     _logger.LogError("Login details sent from client is null.");
                     return BadRequest("Login details is null");
@@ -48,17 +48,17 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Check if email found
-                var user = await _repositoryManager.UserRepository.GetUserByEmail(loginDto.Email!);
+                var user = await _repositoryManager.UserRepository.GetUserByEmail(loginReq.Email!);
                 if (user == null)
                 {
-                    _logger.LogError($"User with email: {loginDto.Email}, hasn't been found in db.");
+                    _logger.LogError($"User with email: {loginReq.Email}, hasn't been found in db.");
                     return NotFound();
                 }
 
                 // Check if password not match
-                if (loginDto.Password != user.Password) 
+                if (loginReq.Password != user.Password) 
                 {
-                    _logger.LogError($"Incorrect password for user with email: {loginDto.Email}.");
+                    _logger.LogError($"Incorrect password for user with email: {loginReq.Email}.");
                     return Unauthorized();
                 }
 

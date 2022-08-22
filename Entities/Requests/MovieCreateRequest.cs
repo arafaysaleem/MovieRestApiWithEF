@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.RequestDtos
+namespace Entities.Requests
 {
-    public class MovieCreateDto
+    public class MovieCreateRequest
     {
         [Required(ErrorMessage = "Title is required")]
         [StringLength(30, ErrorMessage = "Title can't be longer than 30 characters")]

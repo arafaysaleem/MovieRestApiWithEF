@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
-using Entities.RequestDtos;
-using Entities.ResponseDtos;
+using Entities.Requests;
+using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +35,7 @@ namespace MovieRestApiWithEF.Controllers
                 _logger.LogInfo($"Returned all Genres from database.");
 
                 // Convert Models to Response DTO
-                var genresResult = _mapper.Map<IEnumerable<GenreDto>>(genres);
+                var genresResult = _mapper.Map<IEnumerable<GenreResponse>>(genres);
                 
                 // Send 200 OK response
                 return Ok(genresResult);
@@ -69,7 +69,7 @@ namespace MovieRestApiWithEF.Controllers
                     _logger.LogInfo($"Returned genre with id: {id}");
 
                     // Convert Model to Response DTO
-                    var genreResult = _mapper.Map<GenreDto>(genre);
+                    var genreResult = _mapper.Map<GenreResponse>(genre);
                     
                     // Send 200 OK response
                     return Ok(genreResult);
@@ -104,7 +104,7 @@ namespace MovieRestApiWithEF.Controllers
                     _logger.LogInfo($"Returned genre with id: {id}");
 
                     // Convert Model to Response DTO
-                    var genreResult = _mapper.Map<GenreWithDetailsDto>(genre);
+                    var genreResult = _mapper.Map<GenreWithDetailsResponse>(genre);
                     
                     // Send 200 OK response
                     return Ok(genreResult);
@@ -122,12 +122,12 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Post([FromBody] GenreCreateDto genre)
+        public async Task<IActionResult> Post([FromBody] GenreCreateRequest genreReq)
         {
             try
             {
                 // Check if data from client is missing
-                if (genre is null)
+                if (genreReq is null)
                 {
                     _logger.LogError("Genre object sent from client is null.");
                     return BadRequest("Genre object is null");
@@ -141,26 +141,26 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Check if model exists in db
-                var genreFound = await _repositoryManager.GenreRepository.GenreExists(genre.Name);
+                var genreFound = await _repositoryManager.GenreRepository.GenreExists(genreReq.Name);
                 if (genreFound)
                 {
-                    _logger.LogError($"Genre with title \"{genre.Name}\" already exists in db.");
+                    _logger.LogError($"Genre with title \"{genreReq.Name}\" already exists in db.");
                     ModelState.AddModelError("", "Genre already Exist");
                     return StatusCode(500, ModelState);
                 }
 
                 // Convert Models to Response DTO
-                var genreEntity = _mapper.Map<Genre>(genre);
+                var genre = _mapper.Map<Genre>(genreReq);
                 
                 // Create model
-                _repositoryManager.GenreRepository.CreateGenre(genreEntity);
+                _repositoryManager.GenreRepository.CreateGenre(genre);
                 await _repositoryManager.SaveAsync();
 
                 // Convert new model to Response DTO
-                var createdGenre = _mapper.Map<GenreDto>(genreEntity);
+                var genreResponse = _mapper.Map<GenreResponse>(genre);
 
                 // Send response with 201 OK and location of newly created resource and its id
-                return CreatedAtAction(nameof(GetOne), new { id = createdGenre.Id }, createdGenre);
+                return CreatedAtAction(nameof(GetOne), new { id = genreResponse.Id }, genreResponse);
             }
             catch (Exception ex)
             {
@@ -176,12 +176,12 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpPut("{genreId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Update(int genreId, [FromBody] GenreCreateDto genre)
+        public async Task<IActionResult> Update(int genreId, [FromBody] GenreCreateRequest genreReq)
         {
             try
             {
                 // Check if data from client is missing
-                if (genre is null)
+                if (genreReq is null)
                 {
                     _logger.LogError("Genre object sent from client is null.");
                     return BadRequest("Genre object is null");
@@ -203,7 +203,7 @@ namespace MovieRestApiWithEF.Controllers
                 }
 
                 // Convert Request DTO to Model
-                var genreEntity = _mapper.Map<Genre>(genre);
+                var genreEntity = _mapper.Map<Genre>(genreReq);
                 genreEntity.Id = genreId;
                 
                 // Update model

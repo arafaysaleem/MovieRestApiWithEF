@@ -1,6 +1,6 @@
-﻿namespace Entities.ResponseDtos
+﻿namespace Entities.Responses
 {
-    public class MovieWorkerDto
+    public class MovieWorkerResponse
     {
         public int Id { get; set; }
         public string FullName { get; set; }

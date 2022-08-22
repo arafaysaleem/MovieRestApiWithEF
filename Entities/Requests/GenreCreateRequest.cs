@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.RequestDtos
+namespace Entities.Requests
 {
-    public class GenreCreateDto
+    public class GenreCreateRequest
     {
         [Required(ErrorMessage = "Genre name is required")]
         [StringLength(10, ErrorMessage = "Genre name can't be longer than 10 characters")]

@@ -1,6 +1,6 @@
-﻿namespace Entities.ResponseDtos
+﻿namespace Entities.Responses
 {
-    public class GenreDto
+    public class GenreResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }
