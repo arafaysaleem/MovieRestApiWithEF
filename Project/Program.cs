@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.HttpOverrides;
 using MovieRestApiWithEF.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
