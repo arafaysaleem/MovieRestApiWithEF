@@ -21,7 +21,7 @@ namespace Entities.Models
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-
+            // Used to pre-seed data or build relationships.
             builder.HasData(
                 new User { Id = 1, Email = "apiuser@gmail.com", Password = "apiuser", Role = UserRole.ApiUser },
                 new User { Id = 2, Email = "admin@gmail.com", Password = "admin", Role = UserRole.Admin }

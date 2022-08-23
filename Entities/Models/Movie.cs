@@ -22,18 +22,21 @@ namespace Entities.Models
     {
         public void Configure(EntityTypeBuilder<Movie> entityBuilder)
         {
+            // Building a 1-M relationship and delete behaviours.
             entityBuilder
                 .HasOne(e => e.Director)
                 .WithMany(s => s.DirectedMovies)
                 .HasForeignKey(e => e.DirectorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Building a 1-M relationship and delete behaviours.
             entityBuilder
                 .HasOne(e => e.Genre)
                 .WithMany(s => s.Movies)
                 .HasForeignKey(e => e.GenreId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Building a M-M relationship with custom table name and delete behaviours.
             entityBuilder
                 .HasMany(p => p.Cast)
                 .WithMany(p => p.ActedMovies)

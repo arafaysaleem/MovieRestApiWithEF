@@ -39,6 +39,8 @@ namespace Repositories
 
         public void CreateGenre(Genre Genre) => Create(Genre);
 
+        // Empty object is created to allow deleteing by Id. Rest of the details don't matter
+        // as long as the Id is the same, Ef core will delete the matching entity from the db
         public void DeleteGenre(int id) => Delete(new Genre() { Id = id });
 
         public void UpdateGenre(Genre Genre) => Update(Genre);

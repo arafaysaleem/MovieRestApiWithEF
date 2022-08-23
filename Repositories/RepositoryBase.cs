@@ -13,12 +13,20 @@ namespace Repositories
             DbContext = MovieAppDbContext;
         }
 
+        // Setting tracking to false disable change tracking for the returned entities
+        // which speeds up read only queries. However, entities without tracking won't be
+        // remembered by EF Core and will be inserted as new records instead of updating existing.
+        // Therefore in case of updating an entity it should be retrieved with tracking enabled.
         public IQueryable<T> FindAll(bool tracking = default)
         {
             var entities = DbContext.Set<T>();
             return tracking ? entities : entities.AsNoTracking();
         }
 
+        // Setting tracking to false disable change tracking for the returned entities
+        // which speeds up read only queries. However, entities without tracking won't be
+        // remembered by EF Core and will be inserted as new records instead of updating existing.
+        // Therefore in case of updating an entity it should be retrieved with tracking enabled.
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool tracking = default)
         {
             var entities = DbContext.Set<T>().Where(expression);

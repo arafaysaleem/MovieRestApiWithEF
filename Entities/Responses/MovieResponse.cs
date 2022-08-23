@@ -1,5 +1,6 @@
 ﻿namespace Entities.Responses
 {
+    // Acts as a DTO for Get Movie endpoints
     public class MovieResponse
     {
         public int Id { get; set; }

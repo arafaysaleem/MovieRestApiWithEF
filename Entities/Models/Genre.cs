@@ -19,7 +19,7 @@ namespace Entities.Models
     {
         public void Configure(EntityTypeBuilder<Genre> builder)
         {
-
+            // Used to pre-seed data or build relationships.
             builder.HasData(
                 new Genre { Id = 1, Name = "Action" },
                 new Genre { Id = 2, Name = "Sci-Fi" }

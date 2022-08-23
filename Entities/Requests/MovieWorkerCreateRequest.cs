@@ -2,6 +2,7 @@
 
 namespace Entities.Requests
 {
+    // Acts as a DTO for Create Movie Worker endpoints
     public class MovieWorkerCreateRequest
     {
         [Required(ErrorMessage = "Worker fullname is required")]

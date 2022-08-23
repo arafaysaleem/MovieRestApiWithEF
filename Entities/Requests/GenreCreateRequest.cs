@@ -2,6 +2,7 @@
 
 namespace Entities.Requests
 {
+    // Acts as a DTO for Create Genre endpoints
     public class GenreCreateRequest
     {
         [Required(ErrorMessage = "Genre name is required")]

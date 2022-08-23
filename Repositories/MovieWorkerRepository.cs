@@ -46,6 +46,8 @@ namespace Repositories
 
         public void CreateMovieWorker(MovieWorker MovieWorker) => Create(MovieWorker);
 
+        // Empty object is created to allow deleteing by Id. Rest of the details don't matter
+        // as long as the Id is the same, Ef core will delete the matching entity from the db
         public void DeleteMovieWorker(int id) => Delete(new MovieWorker() { Id = id });
 
         public void UpdateMovieWorker(MovieWorker MovieWorker) => Update(MovieWorker);

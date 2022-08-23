@@ -1,5 +1,6 @@
 ﻿namespace Entities.Responses
 {
+    // Acts as a DTO for successful login endpoints
     public class AuthenticatedResponse
     {
         public int Id { get; set; }

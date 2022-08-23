@@ -6,6 +6,8 @@ namespace Entities
     public class MovieAppDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+
+        // Internally references the Genres and MovieWorkers table bcz of relationship
         public DbSet<Movie> Movies { get; set; }
 
         public MovieAppDbContext(DbContextOptions<MovieAppDbContext> options) : base(options) { }

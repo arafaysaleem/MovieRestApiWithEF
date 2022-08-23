@@ -20,9 +20,9 @@ namespace Repositories
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString("g"))
+                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()), // Primary Id
+                new Claim(JwtRegisteredClaimNames.Email, user.Email), // Email
+                new Claim(ClaimTypes.Role, user.Role.ToString("g")) // Role
             };
 
             return claims;

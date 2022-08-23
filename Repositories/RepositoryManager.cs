@@ -6,9 +6,17 @@ namespace Repositories
     public class RepositoryManager : IRepositoryManager
     {
         private readonly MovieAppDbContext _dbContext;
+
+        // Holds a singleton instance of movie repository
         private IMovieRepository? _movie;
+
+        // Holds a singleton instance of genre repository
         private IGenreRepository? _genre;
+
+        // Holds a singleton instance of movie worker repository
         private IMovieWorkerRepository? _movieWorker;
+
+        // Holds a singleton instance of user repository
         private IUserRepository? _user;
 
         public RepositoryManager(MovieAppDbContext MovieAppDbContext)
@@ -18,54 +26,26 @@ namespace Repositories
 
         public IMovieRepository MovieRepository
         {
-            get
-            {
-                if (_movie == null)
-                {
-                    _movie = new MovieRepository(_dbContext);
-                }
-
-                return _movie;
-            }
+            // Lazy access to a repository
+            get { return _movie ??= new MovieRepository(_dbContext); }
         }
 
         public IUserRepository UserRepository
         {
-            get
-            {
-                if (_user == null)
-                {
-                    _user = new UserRepository(_dbContext);
-                }
-
-                return _user;
-            }
+            // Lazy access to a repository
+            get { return _user ??= new UserRepository(_dbContext); }
         }
 
         public IGenreRepository GenreRepository
         {
-            get
-            {
-                if (_genre == null)
-                {
-                    _genre = new GenreRepository(_dbContext);
-                }
-
-                return _genre;
-            }
+            // Lazy access to a repository
+            get { return _genre ??= new GenreRepository(_dbContext); }
         }
 
         public IMovieWorkerRepository MovieWorkerRepository
         {
-            get
-            {
-                if (_movieWorker == null)
-                {
-                    _movieWorker = new MovieWorkerRepository(_dbContext);
-                }
-
-                return _movieWorker;
-            }
+            // Lazy access to a repository
+            get { return _movieWorker ??= new MovieWorkerRepository(_dbContext); }
         }
 
         public async Task SaveAsync()

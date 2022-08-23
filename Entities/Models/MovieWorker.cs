@@ -23,7 +23,7 @@ namespace Entities.Models
     {
         public void Configure(EntityTypeBuilder<MovieWorker> builder)
         {
-
+            // Used to pre-seed data or build relationships.
             builder.HasData(
                 new MovieWorker { Id = 1, FullName = "Christian Bale", PictureUrl = "www.some-url.com/avatar" },
                 new MovieWorker { Id = 2, FullName = "Anne Hathaway", PictureUrl = "www.some-url.com/avatar" },

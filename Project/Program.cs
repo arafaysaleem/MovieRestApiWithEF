@@ -31,7 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseHsts();
+    app.UseHsts(); // Forces browser to communicate only over https
 }
 
 app.UseHttpsRedirection();

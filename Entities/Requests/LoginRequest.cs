@@ -2,6 +2,7 @@
 
 namespace Entities.Requests
 {
+    // Acts as a DTO for Login endpoint
     public class LoginRequest
     {
         [Required(ErrorMessage = "Email is required")]

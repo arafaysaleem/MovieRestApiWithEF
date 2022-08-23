@@ -2,6 +2,7 @@
 
 namespace Entities.Requests
 {
+    // Acts as a DTO for Create Movie endpoints
     public class MovieCreateRequest
     {
         [Required(ErrorMessage = "Title is required")]

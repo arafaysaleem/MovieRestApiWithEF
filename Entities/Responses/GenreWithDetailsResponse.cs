@@ -1,5 +1,6 @@
 ﻿namespace Entities.Responses
 {
+    // Acts as a DTO for Get Genre With Nested Details endpoints
     public class GenreWithDetailsResponse
     {
         public int Id { get; set; }
