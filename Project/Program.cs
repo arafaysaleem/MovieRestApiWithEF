@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
 using MovieRestApiWithEF.Extensions;
+using MovieRestApiWithEF.Filters;
+using MovieRestApiWithEF.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -16,7 +19,8 @@ builder.Services.ConfigureRepositoryManager(); // For initiating an IoC containe
 builder.Services.AddJwtAuthentication(configuration); // For adding an authentication service along with a handler
 builder.Services.AddRoleBasedAuthorization(); // For adding authorization to all controllers and setup role policies
 builder.Services.AddAutoMapper(typeof(Program)); // For auto mapping of DTOs to Models and vice versa
-builder.Services.AddControllers();
+builder.Services.AddFilterAttributes(); // Add filters to be used as attributes
+builder.Services.AddControllersWithFilters(); // For adding controller with global filters
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(); // For adding swagger support
 
@@ -37,6 +41,8 @@ else
 app.UseHttpsRedirection();
 
 app.UseCors(policyName); // To enable cors using our previously configured policy
+
+app.UseMiddleware<ErrorHandlerMiddleware>(); // Enables a global error handler
 
 app.UseAuthentication(); // To add a middleware that validates requests using the initially added auth service
 

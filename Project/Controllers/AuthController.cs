@@ -1,9 +1,11 @@
 ﻿using Contracts;
 using Entities.Requests;
-using Entities.ResponseDtos;
+using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieRestApiWithEF.Exceptions;
 using MovieRestApiWithEF.Extensions;
+using MovieRestApiWithEF.Filters;
 
 namespace MovieRestApiWithEF.Controllers
 {
@@ -29,59 +31,38 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpPost("login")]
+        [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
         public async Task<IActionResult> Login([FromBody] LoginRequest loginReq)
         {
-            try
+            // Check if email found
+            var user = await _repositoryManager.UserRepository.GetUserByEmail(loginReq.Email!);
+            if (user == null)
             {
-                // Check if data from client is missing
-                if (loginReq is null)
-                {
-                    _logger.LogError("Login details sent from client is null.");
-                    return BadRequest("Login details is null");
-                }
-
-                // Validate data from client
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError("Invalid login details sent from client.");
-                    return BadRequest("Invalid model details");
-                }
-
-                // Check if email found
-                var user = await _repositoryManager.UserRepository.GetUserByEmail(loginReq.Email!);
-                if (user == null)
-                {
-                    _logger.LogError($"User with email: {loginReq.Email}, hasn't been found in db.");
-                    return NotFound();
-                }
-
-                // Check if password not match
-                if (loginReq.Password != user.Password) 
-                {
-                    _logger.LogError($"Incorrect password for user with email: {loginReq.Email}.");
-                    return Unauthorized();
-                }
-
-                // Generate access token
-                var token = _jwtService.BuildToken(user);
-
-                // Create Response DTO
-                var authResponse = new AuthenticatedResponse
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Role = user.Role.Name(),
-                    Token = token
-                };
-                
-                // Send response with 200 OK
-                return Ok(authResponse);
+                _logger.LogError($"User with email: {loginReq.Email}, hasn't been found in db.");
+                throw new NotFoundException("Email not found");
             }
-            catch (Exception ex)
+
+            // Check if password not match
+            if (loginReq.Password != user.Password)
             {
-                _logger.LogError($"Something went wrong inside Login action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogError($"Incorrect password for user with email: {loginReq.Email}.");
+                throw new UnauthorizedException("Incorrect password!");
             }
+
+            // Generate access token
+            var token = _jwtService.BuildToken(user);
+
+            // Create Response DTO
+            var authResponse = new AuthenticatedResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Role = user.Role.Name(),
+                Token = token
+            };
+
+            // Send response with 200 OK
+            return Ok(authResponse);
 
         }
     }

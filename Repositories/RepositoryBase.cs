@@ -7,10 +7,10 @@ namespace Repositories
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected MovieAppDbContext DbContext { get; set; }
+        protected DbSet<T> DbSet;
         public RepositoryBase(MovieAppDbContext MovieAppDbContext)
         {
-            DbContext = MovieAppDbContext;
+            DbSet = MovieAppDbContext.Set<T>();
         }
 
         // Setting tracking to false disable change tracking for the returned entities
@@ -19,7 +19,7 @@ namespace Repositories
         // Therefore in case of updating an entity it should be retrieved with tracking enabled.
         public IQueryable<T> FindAll(bool tracking = default)
         {
-            var entities = DbContext.Set<T>();
+            var entities = DbSet;
             return tracking ? entities : entities.AsNoTracking();
         }
 
@@ -29,24 +29,24 @@ namespace Repositories
         // Therefore in case of updating an entity it should be retrieved with tracking enabled.
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool tracking = default)
         {
-            var entities = DbContext.Set<T>().Where(expression);
+            var entities = DbSet.Where(expression);
             return tracking ? entities : entities.AsNoTracking();
         }
 
         public bool Exists(Expression<Func<T, bool>> expression)
         {
-            return DbContext.Set<T>().AsNoTracking().Any(expression);
+            return DbSet.AsNoTracking().Any(expression);
         }
 
         public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
         {
-            return DbContext.Set<T>().AsNoTracking().AnyAsync(expression);
+            return DbSet.AsNoTracking().AnyAsync(expression);
         }
 
-        public void Create(T entity) => DbContext.Set<T>().Add(entity);
+        public void Create(T entity) => DbSet.Add(entity);
 
-        public void Update(T entity) => DbContext.Set<T>().Update(entity);
+        public void Update(T entity) => DbSet.Update(entity);
 
-        public void Delete(T entity) => DbContext.Set<T>().Remove(entity);
+        public void Delete(T entity) => DbSet.Remove(entity);
     }
 }

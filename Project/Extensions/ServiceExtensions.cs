@@ -4,9 +4,11 @@ using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MovieRestApiWithEF.Filters;
 using NLog;
 using Repositories;
 using System.Text;
@@ -174,6 +176,24 @@ namespace MovieRestApiWithEF.Extensions
                 // To allow admin only on specified routes
                 options.AddPolicy("AdminOnly",
                      policy => policy.RequireRole(UserRole.Admin.Name()));
+            });
+        }
+
+        public static void AddControllersWithFilters(this IServiceCollection services)
+        {
+            services.AddControllers(config =>
+            {
+                config.Filters.Add(new ActionResponseFilter());
+            });
+        }
+
+        public static void AddFilterAttributes(this IServiceCollection services)
+        {
+            services.AddScoped<ValidationFilter>(); // Inject validation filter for use as attribute
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                // To disable validation performed by ApiController attribute
+                options.SuppressModelStateInvalidFilter = true;
             });
         }
     }
