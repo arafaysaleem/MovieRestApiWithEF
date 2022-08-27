@@ -5,6 +5,8 @@ using Entities.Requests;
 using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieRestApiWithEF.Exceptions;
+using MovieRestApiWithEF.Filters;
 
 namespace MovieRestApiWithEF.Controllers
 {
@@ -28,23 +30,15 @@ namespace MovieRestApiWithEF.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                // Fetch all models from db
-                var movieWorkers = await _repositoryManager.MovieWorkerRepository.GetAllMovieWorkers();
-                _logger.LogInfo($"Returned all MovieWorkers from database.");
+            // Fetch all models from db
+            var movieWorkers = await _repositoryManager.MovieWorkerRepository.GetAllMovieWorkers();
+            _logger.LogInfo($"Returned all MovieWorkers from database.");
 
-                // Convert Models to Response DTO
-                var movieWorkersResult = _mapper.Map<IEnumerable<MovieWorkerResponse>>(movieWorkers);
+            // Convert Models to Response DTO
+            var movieWorkersResult = _mapper.Map<IEnumerable<MovieWorkerResponse>>(movieWorkers);
 
-                // Send response with 200 OK
-                return Ok(movieWorkersResult);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside Get All MovieWorkers action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
+            // Send response with 200 OK
+            return Ok(movieWorkersResult);
         }
 
         /// <summary>
@@ -53,32 +47,24 @@ namespace MovieRestApiWithEF.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            try
+            // Fetch model from db
+            var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerById(id);
+
+            // Check if model not found
+            if (movieWorker is null)
             {
-                // Fetch model from db
-                var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerById(id);
-
-                // Check if model not found
-                if (movieWorker is null)
-                {
-                    _logger.LogError($"Movie worker with id: {id}, hasn't been found in db.");
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned movie worker with id: {id}");
-
-                    // Convert Model to Response DTO
-                    var movieWorkerResult = _mapper.Map<MovieWorkerResponse>(movieWorker);
-
-                    // Send response with 200 OK
-                    return Ok(movieWorkerResult);
-                }
+                _logger.LogError($"Movie worker with id: {id}, hasn't been found in db.");
+                throw new NotFoundException("Movie worker not found");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Something went wrong inside Get One MovieWorker action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogInfo($"Returned movie worker with id: {id}");
+
+                // Convert Model to Response DTO
+                var movieWorkerResult = _mapper.Map<MovieWorkerResponse>(movieWorker);
+
+                // Send response with 200 OK
+                return Ok(movieWorkerResult);
             }
         }
 
@@ -88,32 +74,24 @@ namespace MovieRestApiWithEF.Controllers
         [HttpGet("{id}/movies")]
         public async Task<IActionResult> GetOneWithMovies(int id)
         {
-            try
+            // Fetch model with nested details from db
+            var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerMovies(id);
+
+            // Check if model not found
+            if (movieWorker is null)
             {
-                // Fetch model with nested details from db
-                var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerMovies(id);
-
-                // Check if model not found
-                if (movieWorker is null)
-                {
-                    _logger.LogError($"Movie worker with id: {id}, hasn't been found in db.");
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned movie worker with id: {id}");
-
-                    // Convert Model to Response DTO
-                    var movieWorkerResult = _mapper.Map<MovieWorkerWithDetailsResponse>(movieWorker);
-
-                    // Send response with 200 OK
-                    return Ok(movieWorkerResult);
-                }
+                _logger.LogError($"Movie worker with id: {id}, hasn't been found in db.");
+                throw new NotFoundException("Movie worker not found");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Something went wrong inside Get One MovieWorker with Movies action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogInfo($"Returned movie worker with id: {id}");
+
+                // Convert Model to Response DTO
+                var movieWorkerResult = _mapper.Map<MovieWorkerWithDetailsResponse>(movieWorker);
+
+                // Send response with 200 OK
+                return Ok(movieWorkerResult);
             }
         }
 
@@ -122,42 +100,21 @@ namespace MovieRestApiWithEF.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
+        [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
         public async Task<IActionResult> Post([FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
-            try
-            {
-                // Check if data from client is missing
-                if (movieWorkerReq is null)
-                {
-                    _logger.LogError("Movie worker object sent from client is null.");
-                    return BadRequest("Movie worker object is null");
-                }
+            // Convert Request DTO to Model
+            var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
 
-                // Validate data from client
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError("Invalid movie worker object sent from client.");
-                    return BadRequest("Invalid model object");
-                }
+            // Create Movie Worker
+            _repositoryManager.MovieWorkerRepository.CreateMovieWorker(movieWorker);
+            await _repositoryManager.SaveAsync();
 
-                // Convert Request DTO to Model
-                var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
+            // Convert newly created Model to Response DTO
+            var movieWorkerResponse = _mapper.Map<MovieWorkerResponse>(movieWorker);
 
-                // Create Movie Worker
-                _repositoryManager.MovieWorkerRepository.CreateMovieWorker(movieWorker);
-                await _repositoryManager.SaveAsync();
-
-                // Convert newly created Model to Response DTO
-                var movieWorkerResponse = _mapper.Map<MovieWorkerResponse>(movieWorker);
-
-                // Send model with status 201 Created and location of newly created resource and its id
-                return CreatedAtAction(nameof(GetOne), new { id = movieWorkerResponse.Id }, movieWorkerResponse);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside Post MovieWorker action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
+            // Send model with status 201 Created and location of newly created resource and its id
+            return CreatedAtAction(nameof(GetOne), new { id = movieWorkerResponse.Id }, movieWorkerResponse);
         }
 
         // <summary>
@@ -166,50 +123,29 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpPut("{movieWorkerId:int}")]
         [Authorize(Policy = "AdminOnly")]
+        [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
         public async Task<IActionResult> Update(int movieWorkerId, [FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
-            try
+            // Check if movie exists in db
+            var movieWorkerExists = await _repositoryManager
+                .MovieWorkerRepository
+                .MovieWorkerExists(movieWorkerId);
+            if (!movieWorkerExists)
             {
-                // Check if data from client is missing
-                if (movieWorkerReq is null)
-                {
-                    _logger.LogError("Movie worker object sent from client is null.");
-                    return BadRequest("Movie worker object is null");
-                }
-
-                // Validate data from client
-                if (!ModelState.IsValid)
-                {
-                    _logger.LogError("Invalid movie worker object sent from client.");
-                    return BadRequest("Invalid model object");
-                }
-
-                // Check if movie exists in db
-                var movieWorkerExists = await _repositoryManager
-                    .MovieWorkerRepository
-                    .MovieWorkerExists(movieWorkerId);
-                if (!movieWorkerExists)
-                {
-                    _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
-                    return NotFound();
-                }
-
-                // Convert Request DTO to Model
-                var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
-                movieWorker.Id = movieWorkerId;
-
-                // Update model
-                _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorker);
-                await _repositoryManager.SaveAsync();
-
-                // Send 204 response
-                return NoContent();
+                _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
+                throw new NotFoundException("Movie worker not found");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside Update movieWorker action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
+
+            // Convert Request DTO to Model
+            var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
+            movieWorker.Id = movieWorkerId;
+
+            // Update model
+            _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorker);
+            await _repositoryManager.SaveAsync();
+
+            // Send 204 response
+            return NoContent();
         }
 
         /// <summary>
@@ -220,28 +156,20 @@ namespace MovieRestApiWithEF.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int movieWorkerId)
         {
-            try
+            // Check if model exists in db
+            var movieWorkerExists = await _repositoryManager.MovieWorkerRepository.MovieWorkerExists(movieWorkerId);
+            if (!movieWorkerExists)
             {
-                // Check if model exists in db
-                var movieWorkerExists = await _repositoryManager.MovieWorkerRepository.MovieWorkerExists(movieWorkerId);
-                if (!movieWorkerExists)
-                {
-                    _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
-                    return NotFound();
-                }
-
-                // Delete model
-                _repositoryManager.MovieWorkerRepository.DeleteMovieWorker(movieWorkerId);
-                await _repositoryManager.SaveAsync();
-
-                // Send 204 response
-                return NoContent();
+                _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
+                throw new NotFoundException("Movie worker not found");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside Delete movieWorker action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
+
+            // Delete model
+            _repositoryManager.MovieWorkerRepository.DeleteMovieWorker(movieWorkerId);
+            await _repositoryManager.SaveAsync();
+
+            // Send 204 response
+            return NoContent();
         }
     }
 }

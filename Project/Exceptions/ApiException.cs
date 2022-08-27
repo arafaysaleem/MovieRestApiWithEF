@@ -7,6 +7,11 @@ namespace MovieRestApiWithEF.Exceptions
         public NotFoundException(string message) : base(HttpStatusCode.NotFound, message) { }
     }
 
+    public class DuplicateEntryException : BaseException
+    {
+        public DuplicateEntryException(string message) : base(HttpStatusCode.Conflict, message) { }
+    }
+
     public class BadRequestException : BaseException
     {
         public BadRequestException(string message) : base(HttpStatusCode.BadRequest, message) { }

@@ -159,7 +159,7 @@ namespace MovieRestApiWithEF.Extensions
                 // Adds the auth header globally on all requests
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    { openApiScheme, new string[] {} }
+                    { openApiScheme, Array.Empty<string>() }
                 });
             });
         }

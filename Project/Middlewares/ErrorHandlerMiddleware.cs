@@ -41,6 +41,8 @@ namespace MovieRestApiWithEF.Middlewares
                 _ => HttpStatusCode.InternalServerError // Else 500 for other unfamiliar exceptions
             };
 
+            context.Response.StatusCode = (int)statusCode;
+
             var data = exception switch
             {
                 UnprocessibleEntityException e => e.Details, // If 422, then get list of validation errors
