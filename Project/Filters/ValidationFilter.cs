@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Entities.Responses;
-using System.Net;
-using System.Security.Principal;
 using MovieRestApiWithEF.Exceptions;
 using MovieRestApiWithEF.Extensions;
-using Entities.Models;
 
 namespace MovieRestApiWithEF.Filters
 {
@@ -13,17 +8,22 @@ namespace MovieRestApiWithEF.Filters
     {
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            // Get the body passed to the request
             var param = context.ActionArguments.SingleOrDefault();
+            
+            // Check if body is missing
             if (param.Value == null)
             {
                 throw new BadRequestException("Request data sent from client is null");
             }
 
+            // Check validation for the body
             if (!context.ModelState.IsValid)
             {
                 throw new UnprocessibleEntityException(
                     "Invalid object sent from client",
-                    details: context.ModelState.toJson());
+                    details: context.ModelState.toJson() // toJson gets the model errors in a readable form
+                );
             }
         }
 

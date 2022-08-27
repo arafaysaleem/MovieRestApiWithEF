@@ -6,13 +6,18 @@ namespace MovieRestApiWithEF.Extensions
 {
     public static class ModelStateExtensions
     {
-        public static string toJson(this ModelStateDictionary modelState)
+        public static Dictionary<string, string[]> toJson(this ModelStateDictionary modelState)
         {
             // Get key(s) and error message(s) from the ModelState
-            var serializableModelState = new SerializableError(modelState);
+            var errors = modelState
+                .Where(x => (x.Value?.Errors.Count ?? 0)  > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
 
-            // Convert to a string
-            return JsonConvert.SerializeObject(serializableModelState);
+            // return errors list
+            return errors;
         }
     }
 }

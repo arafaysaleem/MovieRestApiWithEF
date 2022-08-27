@@ -14,8 +14,8 @@ namespace MovieRestApiWithEF.Exceptions
 
     public class UnprocessibleEntityException : BaseException
     {
-        public string Details { get; private set; }
-        public UnprocessibleEntityException(string message, string details) : base(
+        public object Details { get; private set; }
+        public UnprocessibleEntityException(string message, object details) : base(
             HttpStatusCode.UnprocessableEntity, 
             message)
         {

@@ -18,14 +18,16 @@ namespace MovieRestApiWithEF.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
+            // Wrap in try catch to capture any unhandled exception from api or server
             try
             {
+                // Forward the request to normal pipelines
                 await _next(context);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception Caught: {ex}");
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, ex); // To transform exception to error response
             }
         }
 
@@ -35,24 +37,27 @@ namespace MovieRestApiWithEF.Middlewares
 
             var statusCode = exception switch
             {
-                BaseException e => e.StatusCode,
-                _ => HttpStatusCode.InternalServerError
+                BaseException e => e.StatusCode, // If api exception, get its status code
+                _ => HttpStatusCode.InternalServerError // Else 500 for other unfamiliar exceptions
             };
 
             var data = exception switch
             {
-                UnprocessibleEntityException e => e.Details,
-                _ => null
+                UnprocessibleEntityException e => e.Details, // If 422, then get list of validation errors
+                _ => null // Else no validation errors
             };
 
+            // Generate a consistent api response from this info
             var errorResponse = new ApiResponse(
                 success: false,
                 message: exception.Message,
+                code: exception.GetType().Name,
                 statusCode: statusCode,
                 body: new { },
                 details: data
             );
 
+            // Return the api response from the middleware to the client
             return context.Response.WriteAsync(errorResponse.ToString());
         }
     }

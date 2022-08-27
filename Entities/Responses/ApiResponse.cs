@@ -5,10 +5,25 @@ namespace Entities.Responses
 {
     public class ApiResponse
     {
-        public bool Success { get; private set; }
-        public string Message { get; private set; }
-        public int StatusCode { get; private set; }
-        public string? Details { get; private set; }
+        public class ResponseHeaders
+        {
+            public bool Success { get; init; }
+            public string? Code { get; init; }
+            public int StatusCode { get; init; }
+            public string Message { get; init; }
+            public object? Details { get; init; }
+
+            public ResponseHeaders(bool success, string message, int statusCode, object? details, string? code)
+            {
+                Success = success;
+                Code = code;
+                StatusCode = statusCode;
+                Message = message;
+                Details = details;
+            }
+        }
+
+        public ResponseHeaders Headers { get; init; }
 
         public object Body { get; private set; }
 
@@ -16,14 +31,18 @@ namespace Entities.Responses
             string message,
             HttpStatusCode statusCode,
             object body,
-            string? details = null,
+            object? details = null,
+            string? code = "OK",
             bool success = true)
         {
-            this.Success = success;
-            this.Message = message;
-            this.StatusCode = (int)statusCode;
-            this.Details = details;
-            this.Body = body;
+            Headers = new ResponseHeaders(
+                success: success,
+                code: code,
+                statusCode: (int)statusCode,
+                message: message,
+                details: details
+            );
+            Body = body;
         }
 
         public override string ToString()
@@ -32,26 +51,16 @@ namespace Entities.Responses
             // {
             //   Headers: {
             //      Success: bool,
-            //      Message: string,
+            //      Code: string?
             //      StatusCode: int,
+            //      Message: string,
             //      Details: string?
             //   },
             //   Body: object
             // }
-            var res = new
-            {
-                Headers = new
-                {
-                    this.Success,
-                    this.Message,
-                    this.StatusCode,
-                    this.Details
-                },
-                this.Body
-            };
 
             // Convert model to Json
-            return JsonConvert.SerializeObject(res);
+            return JsonConvert.SerializeObject(this);
         }
     }
 }
