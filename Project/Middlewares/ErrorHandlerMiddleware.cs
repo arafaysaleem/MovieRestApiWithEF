@@ -23,6 +23,14 @@ namespace MovieRestApiWithEF.Middlewares
             {
                 // Forward the request to normal pipelines
                 await _next(context);
+
+                if (context.Response.StatusCode == (int)HttpStatusCode.Forbidden)
+                {
+                    throw new ForbiddenException("User does not have permission for the action.");
+                } else if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                {
+                    throw new UnauthorizedException("Authentication failed.");
+                }
             }
             catch (Exception ex)
             {
