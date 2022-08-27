@@ -38,6 +38,9 @@ namespace MovieRestApiWithEF
             // To map request movie body to Movie EFCore model
             CreateMap<MovieWorkerCreateRequest, MovieWorker>();
 
+
+            // To map EFCore model to User profile response
+            CreateMap<User, UserResponse>();
         }
     }
 }
