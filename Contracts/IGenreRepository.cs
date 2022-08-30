@@ -4,7 +4,7 @@ namespace Contracts
 {
     public interface IGenreRepository
     {
-        Task<IEnumerable<Genre>> GetAllGenres(bool details = false);
+        Task<IEnumerable<Genre>> GetAllGenres();
 
         Task<Genre?> GetGenreById(int id);
 
