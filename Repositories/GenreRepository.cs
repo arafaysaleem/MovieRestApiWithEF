@@ -7,30 +7,25 @@ namespace Repositories
 {
     public class GenreRepository : RepositoryBase<Genre>, IGenreRepository
     {
-        public GenreRepository(MovieAppDbContext db) : base(db) { }
+        public GenreRepository(MySqlDbContext db) : base(db) { }
 
         public async Task<IEnumerable<Genre>> GetAllGenres(bool details)
         {
             if (details)
             {
-                return await FindAll()
-                    .Include(e => e.Movies)
-                    .ToListAsync();
+                throw new NotImplementedException();
             }
-            return await FindAll().ToListAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<Genre?> GetGenreById(int id)
         {
-            return await FindByCondition(e => e.Id.Equals(id))
-                .FirstOrDefaultAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<Genre?> GetGenreMovies(int id)
         {
-            return await FindByCondition(e => e.Id.Equals(id))
-                .Include(e => e.Movies)
-                .FirstOrDefaultAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<bool> GenreExists(string name) => await ExistsAsync(o => o.Name.Equals(name));
@@ -39,8 +34,6 @@ namespace Repositories
 
         public void CreateGenre(Genre Genre) => Create(Genre);
 
-        // Empty object is created to allow deleteing by Id. Rest of the details don't matter
-        // as long as the Id is the same, Ef core will delete the matching entity from the db
         public void DeleteGenre(int id) => Delete(new Genre() { Id = id });
 
         public void UpdateGenre(Genre Genre) => Update(Genre);

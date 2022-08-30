@@ -41,18 +41,11 @@ namespace MovieRestApiWithEF.Extensions
             // Fetch connection string from app settings
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            // Inject Db service into app
-            services.AddDbContext<MovieAppDbContext>(x =>
-            {
-                // MariaDB latest supported version
-                var mySqlVersion = new Version(10, 8, 0);
+            // Init Db service
+            var dbContext = new MySqlDbContext(connectionString);
 
-                // Enable MySQL provider
-                x.UseMySql(connectionString,
-                    new MariaDbServerVersion(mySqlVersion),
-                    b => b.MigrationsAssembly(nameof(Entities)) // Specify library that contains Migrations
-                );
-            });
+            // Inject Db service into app
+            services.AddScoped(_ => dbContext);
         }
 
         public static void ConfigureLoggerService(this IServiceCollection services)
