@@ -15,7 +15,7 @@ namespace Repositories
 
         public async Task<IEnumerable<Genre>> GetAllGenres()
         {
-            return await _db.Read("sp_ReadAllGenres",
+            return await _db.Read("ReadAllGenres",
                 async (reader) =>
                 {
                     var genres = new List<Genre>();
@@ -42,7 +42,7 @@ namespace Repositories
                 { "Id", id }
             };
 
-            return await _db.Read("sp_ReadGenre", paramDict,
+            return await _db.Read("ReadGenre", paramDict,
                 async (reader) =>
                 {
                     Genre? genre = null;
@@ -73,7 +73,7 @@ namespace Repositories
                 { "Name", name }
             };
 
-            bool exists = (bool)(await _db.ReadScalar("sp_GenreExists", paramDict) ?? false);
+            bool exists = (bool)(await _db.ReadScalar("GenreExists", paramDict) ?? false);
 
             return exists;
         }
@@ -87,15 +87,46 @@ namespace Repositories
                 { "Name", null }
             };
 
-            bool exists = (bool)(await _db.ReadScalar("sp_GenreExists", paramDict) ?? false);
+            bool exists = (bool)(await _db.ReadScalar("GenreExists", paramDict) ?? false);
 
             return exists;
         }
 
-        public void CreateGenre(Genre Genre) => throw new NotImplementedException();
+        public Task<bool> CreateGenre(Genre genre)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "Name", genre.Name }
+            };
 
-        public void DeleteGenre(int id) => throw new NotImplementedException();
+            return _db.Set<bool>("InsertGenre", paramDict,
+                (modified) => modified > 0);
+        }
+        public Task<bool> UpdateGenre(Genre genre)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "Id", genre.Id },
+                { "Name", genre.Name }
+            };
 
-        public void UpdateGenre(Genre Genre) => throw new NotImplementedException();
+            return _db.Set<bool>("UpdateGenre", paramDict,
+                (modified) => modified > 0);
+        }
+
+        public Task<bool> DeleteGenre(int id)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "Id", id }
+            };
+
+            return _db.Set<bool>("DeleteGenre", paramDict,
+                (modified) => modified > 0);
+        }
+
     }
 }

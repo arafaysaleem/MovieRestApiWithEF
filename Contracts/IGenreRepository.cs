@@ -14,10 +14,10 @@ namespace Contracts
 
         Task<bool> GenreExists(int id);
 
-        void CreateGenre(Genre Genre);
+        Task<bool> CreateGenre(Genre Genre);
 
-        void UpdateGenre(Genre Genre);
+        Task<bool> UpdateGenre(Genre Genre);
 
-        void DeleteGenre(int id);
+        Task<bool> DeleteGenre(int id);
     }
 }

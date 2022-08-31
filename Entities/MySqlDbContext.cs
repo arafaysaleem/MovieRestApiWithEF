@@ -13,7 +13,7 @@ namespace Entities
             this.ConnString = connString;
         }
 
-        public async Task<MySqlConnection> OpenConnection(MySqlConnection connection)
+        private async Task<MySqlConnection> OpenConnection(MySqlConnection connection)
         {
             if (connection.State == ConnectionState.Closed)
             {
@@ -22,7 +22,7 @@ namespace Entities
             return connection;
         }
 
-        public async Task CloseConnection(MySqlConnection connection)
+        private async Task CloseConnection(MySqlConnection connection)
         {
             if (connection.State == ConnectionState.Open)
             {
@@ -121,6 +121,43 @@ namespace Entities
                 var result = await command.ExecuteScalarAsync();
 
                 return result;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await CloseConnection(conn);
+            }
+        }
+
+        public async Task<R> Set<R>(string procedure,
+            IDictionary<string, object> paramDict,
+            Func<int, R> mapper)
+        {
+            MySqlConnection conn = new MySqlConnection(ConnString);
+            try
+            {
+                // Create and Open connection
+                conn = await OpenConnection(conn);
+
+                // Prepare SQL
+                var command = new MySqlCommand(procedure, conn);
+
+                // Set type to procedure
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Attach parameters
+                foreach (var param in paramDict)
+                {
+                    command.Parameters.AddWithValue(param.Key, param.Value);
+                }
+
+                // Execute SQL
+                var modified = await command.ExecuteNonQueryAsync();
+
+                return mapper(modified);
             }
             catch
             {
