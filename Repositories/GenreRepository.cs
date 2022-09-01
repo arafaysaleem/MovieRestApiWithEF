@@ -4,18 +4,13 @@ using Entities.Models;
 
 namespace Repositories
 {
-    public class GenreRepository : IGenreRepository
+    public class GenreRepository : RepositoryBase<Genre>, IGenreRepository
     {
-        private readonly MySqlDbContext _db;
-
-        public GenreRepository(MySqlDbContext db)
-        {
-            _db = db;
-        }
+        public GenreRepository(MySqlDbContext db) : base(db) { }
 
         public async Task<IEnumerable<Genre>> GetAllGenres()
         {
-            return await _db.Read("ReadAllGenres",
+            return await ReadAsync("ReadAllGenres",
                 async (reader) =>
                 {
                     var genres = new List<Genre>();
@@ -42,7 +37,7 @@ namespace Repositories
                 { "Id", id }
             };
 
-            return await _db.Read("ReadGenre", paramDict,
+            return await ReadAsync("ReadGenre", paramDict,
                 async (reader) =>
                 {
                     Genre? genre = null;
@@ -59,7 +54,7 @@ namespace Repositories
                 });
         }
 
-        public async Task<Genre?> GetGenreMovies(int id)
+        public Task<Genre?> GetGenreMovies(int id)
         {
             throw new NotImplementedException();
         }
@@ -73,7 +68,7 @@ namespace Repositories
                 { "Name", name }
             };
 
-            bool exists = (bool)(await _db.ReadScalar("GenreExists", paramDict) ?? false);
+            bool exists = (bool)(await ReadScalarAsync("GenreExists", paramDict) ?? false);
 
             return exists;
         }
@@ -87,7 +82,7 @@ namespace Repositories
                 { "Name", null }
             };
 
-            bool exists = (bool)(await _db.ReadScalar("GenreExists", paramDict) ?? false);
+            bool exists = (bool)(await ReadScalarAsync("GenreExists", paramDict) ?? false);
 
             return exists;
         }
@@ -100,9 +95,14 @@ namespace Repositories
                 { "Name", genre.Name }
             };
 
-            return _db.Set<bool>("InsertGenre", paramDict,
-                (modified) => modified > 0);
+            return InsertAsync<bool>("InsertGenre", paramDict,
+                (newId) =>
+                {
+                    genre.Id = newId;
+                    return true;
+                });
         }
+
         public Task<bool> UpdateGenre(Genre genre)
         {
             // Create params
@@ -112,7 +112,7 @@ namespace Repositories
                 { "Name", genre.Name }
             };
 
-            return _db.Set<bool>("UpdateGenre", paramDict,
+            return SetAsync<bool>("UpdateGenre", paramDict,
                 (modified) => modified > 0);
         }
 
@@ -124,7 +124,7 @@ namespace Repositories
                 { "Id", id }
             };
 
-            return _db.Set<bool>("DeleteGenre", paramDict,
+            return SetAsync<bool>("DeleteGenre", paramDict,
                 (modified) => modified > 0);
         }
 

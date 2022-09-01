@@ -1,15 +1,10 @@
 ﻿using Entities.Models;
-using System.Linq.Expressions;
 
 namespace Contracts
 {
     public interface IMovieWorkerRepository
     {
-        Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(
-            Expression<Func<MovieWorker, bool>>? condition = null,
-            bool details = false,
-            bool tracking = false
-        );
+        Task<IEnumerable<MovieWorker>> GetAllMovieWorkers();
 
         Task<MovieWorker?> GetMovieWorkerById(int id);
 
@@ -17,10 +12,10 @@ namespace Contracts
 
         Task<bool> MovieWorkerExists(int id);
 
-        void CreateMovieWorker(MovieWorker MovieWorker);
+        Task<bool> CreateMovieWorker(MovieWorker MovieWorker);
 
-        void UpdateMovieWorker(MovieWorker MovieWorker);
+        Task<bool> UpdateMovieWorker(MovieWorker MovieWorker);
 
-        void DeleteMovieWorker(int id);
+        Task<bool> DeleteMovieWorker(int id);
     }
 }

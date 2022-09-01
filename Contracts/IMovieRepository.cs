@@ -8,14 +8,14 @@ namespace Contracts
 
         Task<Movie?> GetMovieById(int id);
 
-        Task<bool> MovieExists(string Title);
+        Task<bool> MovieExists(string Name);
 
         Task<bool> MovieExists(int id);
 
-        void CreateMovie(Movie movie);
+        Task<bool> CreateMovie(Movie Movie);
 
-        void UpdateMovie(Movie movie);
+        Task<bool> UpdateMovie(Movie Movie);
 
-        void DeleteMovie(int id);
+        Task<bool> DeleteMovie(int id);
     }
 }

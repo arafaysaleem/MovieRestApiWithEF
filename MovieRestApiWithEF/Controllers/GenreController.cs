@@ -123,8 +123,13 @@ namespace MovieRestApiWithEF.Controllers
             var genre = _mapper.Map<Genre>(genreReq);
 
             // Create model
-            _repositoryManager.GenreRepository.CreateGenre(genre);
-            await _repositoryManager.SaveAsync();
+            var success = await _repositoryManager.GenreRepository.CreateGenre(genre);
+
+            if (!success)
+            {
+                _logger.LogError($"Genre with title \"{genreReq.Name}\" failed to be inserted.");
+                throw new InternalServerException("Genre failed to be created");
+            }
 
             // Convert new model to Response DTO
             var genreResponse = _mapper.Map<GenreResponse>(genre);
@@ -142,45 +147,38 @@ namespace MovieRestApiWithEF.Controllers
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
         public async Task<IActionResult> Update(int genreId, [FromBody] GenreCreateRequest genreReq)
         {
-            // Check if model exists in db
-            var genreExists = await _repositoryManager.GenreRepository.GenreExists(genreId);
-            if (!genreExists)
-            {
-                _logger.LogError($"Genre with id: {genreId}, hasn't been found in db.");
-                throw new NotFoundException("Genre not found");
-            }
-
             // Convert Request DTO to Model
             var genreEntity = _mapper.Map<Genre>(genreReq);
             genreEntity.Id = genreId;
 
             // Update model
-            _repositoryManager.GenreRepository.UpdateGenre(genreEntity);
-            await _repositoryManager.SaveAsync();
+            var success = await _repositoryManager.GenreRepository.UpdateGenre(genreEntity);
+
+            if (!success)
+            {
+                _logger.LogError($"Genre with id: {genreId}, hasn't been found in db.");
+                throw new NotFoundException("Genre not found");
+            }
 
             // Send 204 response
             return NoContent();
         }
 
         /// <summary>
-        /// Update a genre
+        /// Delete a genre
         /// </summary>
         /// <return></return>
         [HttpDelete("{genreId:int}")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int genreId)
         {
-            // Check if model exists in db
-            var genreExists = await _repositoryManager.GenreRepository.GenreExists(genreId);
-            if (!genreExists)
+            // Delete model
+            var success = await _repositoryManager.GenreRepository.DeleteGenre(genreId);
+            if (!success)
             {
                 _logger.LogError($"Genre with id: {genreId}, hasn't been found in db.");
                 throw new NotFoundException("Genre not found");
             }
-
-            // Delete model
-            _repositoryManager.GenreRepository.DeleteGenre(genreId);
-            await _repositoryManager.SaveAsync();
 
             // Send 204 response
             return NoContent();

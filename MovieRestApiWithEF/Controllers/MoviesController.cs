@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieRestApiWithEF.Exceptions;
 using MovieRestApiWithEF.Filters;
+using System.Collections.ObjectModel;
 
 namespace MovieRestApiWithEF.Controllers
 {
@@ -81,18 +82,23 @@ namespace MovieRestApiWithEF.Controllers
             }
 
             // Get Nested Models using Nested Ids From DTO
-            var cast = await _repositoryManager.MovieWorkerRepository
-                .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+            //var cast = await _repositoryManager.MovieWorkerRepository
+            //    .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
             // Convert Request DTO to EFCore Model
             var movie = _mapper.Map<Movie>(movieReq);
 
             // Save Nested Models into Parent Model
-            movie.Cast = (ICollection<MovieWorker>)cast;
+            //movie.Cast = (ICollection<MovieWorker>)cast;
+            movie.Cast = new Collection<MovieWorker>();
 
             // Create Movie
-            _repositoryManager.MovieRepository.CreateMovie(movie);
-            await _repositoryManager.SaveAsync();
+            var success = await _repositoryManager.MovieRepository.CreateMovie(movie);
+            if (!success)
+            {
+                _logger.LogError($"Movie with title \"{movieReq.Title}\" could not be inserted in db.");
+                throw new InternalServerException("Movie failed to be created");
+            }
 
             // Convert created movie to a Response DTO
             var movieResponse = _mapper.Map<MovieWithDetailsResponse>(movie);
@@ -111,28 +117,24 @@ namespace MovieRestApiWithEF.Controllers
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
         public async Task<IActionResult> Update(int movieId, [FromBody] MovieCreateRequest movieReq)
         {
-            // Check if already exists
-            var movieExists = await _repositoryManager.MovieRepository.MovieExists(movieId);
-            if (!movieExists)
-            {
-                _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
-                throw new NotFoundException("Movie not found");
-            }
-
             // Convert Request DTO to EFCore Model
             var movieEntity = _mapper.Map<Movie>(movieReq);
             movieEntity.Id = movieId;
 
             // Get Nested Models using Nested Ids From DTO
-            var cast = await _repositoryManager.MovieWorkerRepository
-                .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+            //var cast = await _repositoryManager.MovieWorkerRepository
+            //    .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
             // Save Nested Models into Parent Model
-            movieEntity.Cast = (ICollection<MovieWorker>)cast;
+            //movieEntity.Cast = (ICollection<MovieWorker>)cast;
 
             // Update movie
-            _repositoryManager.MovieRepository.UpdateMovie(movieEntity);
-            await _repositoryManager.SaveAsync();
+            var success = await _repositoryManager.MovieRepository.UpdateMovie(movieEntity);
+            if (!success)
+            {
+                _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
+                throw new NotFoundException("Movie not found");
+            }
 
             // return 204 response
             return NoContent();
@@ -146,17 +148,13 @@ namespace MovieRestApiWithEF.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int movieId)
         {
-            // Check if movie exists
-            var movieExists = await _repositoryManager.MovieRepository.MovieExists(movieId);
-            if (!movieExists)
+            // Delete movie
+            var success = await _repositoryManager.MovieRepository.DeleteMovie(movieId);
+            if (!success)
             {
                 _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
                 throw new NotFoundException("Movie not found");
             }
-
-            // Delete movie
-            _repositoryManager.MovieRepository.DeleteMovie(movieId);
-            await _repositoryManager.SaveAsync();
 
             // Return 204 response
             return NoContent();

@@ -69,17 +69,13 @@ namespace MovieRestApiWithEF.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int userId)
         {
-            // Check if user exists
-            var userExists = await _repositoryManager.UserRepository.UserExists(userId);
-            if (!userExists)
+            // Delete user
+            var success = await _repositoryManager.UserRepository.DeleteUser(userId);
+            if (!success)
             {
                 _logger.LogError($"User with id: {userId}, hasn't been found in db.");
                 throw new NotFoundException("User not found");
             }
-
-            // Delete user
-            _repositoryManager.UserRepository.DeleteUser(userId);
-            await _repositoryManager.SaveAsync();
 
             // Return 204 response
             return NoContent();

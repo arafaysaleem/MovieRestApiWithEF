@@ -10,14 +10,14 @@ namespace Contracts
 
         Task<User?> GetUserByEmail(string email);
 
-        Task<bool> UserExists(string Email);
+        Task<bool> UserExists(string email);
 
         Task<bool> UserExists(int id);
 
-        void CreateUser(User User);
+        Task<bool> CreateUser(User user);
 
-        void UpdateUser(User User);
+        Task<bool> UpdateUser(User user);
 
-        void DeleteUser(int id);
+        Task<bool> DeleteUser(int id);
     }
 }

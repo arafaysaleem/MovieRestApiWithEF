@@ -1,55 +1,121 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Repositories
 {
     public class MovieWorkerRepository : RepositoryBase<MovieWorker>, IMovieWorkerRepository
     {
-        public MovieWorkerRepository(MovieAppDbContext db) : base(db) { }
+        public MovieWorkerRepository(MySqlDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(
-            Expression<Func<MovieWorker, bool>>? condition,
-            bool details,
-            bool tracking)
+        public async Task<IEnumerable<MovieWorker>> GetAllMovieWorkers()
         {
-            var results = condition is null ? FindAll(tracking: tracking) : FindByCondition(condition, tracking: tracking);
+            return await ReadAsync("ReadAllMovieWorkers",
+                async (reader) =>
+                {
+                    var movieWorkers = new List<MovieWorker>();
 
-            if (details)
-            {
-                return await results
-                        .Include(e => e.ActedMovies)
-                        .Include(e => e.DirectedMovies)
-                        .ToListAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        var movieWorker = new MovieWorker()
+                        {
+                            Id = reader.GetInt32("Id"),
+                            FullName = reader.GetString("FullName"),
+                            PictureUrl = reader.GetString("PictureUrl")
+                        };
+                        movieWorkers.Add(movieWorker);
+                    }
 
-            }
-            return await results.ToListAsync();
+                    return movieWorkers;
+                });
         }
 
         public async Task<MovieWorker?> GetMovieWorkerById(int id)
         {
-            return await FindByCondition(e => e.Id.Equals(id))
-                .FirstOrDefaultAsync();
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "Id", id }
+            };
+
+            return await ReadAsync("ReadMovieWorker", paramDict,
+                async (reader) =>
+                {
+                    MovieWorker? movieWorker = null;
+                    while (await reader.ReadAsync())
+                    {
+                        movieWorker = new MovieWorker()
+                        {
+                            Id = reader.GetInt32("Id"),
+                            FullName = reader.GetString("FullName"),
+                            PictureUrl = reader.GetString("PictureUrl"),
+                        };
+                    }
+
+                    return movieWorker;
+                });
         }
 
-        public async Task<MovieWorker?> GetMovieWorkerMovies(int id)
+        public Task<MovieWorker?> GetMovieWorkerMovies(int id)
         {
-            return await FindByCondition(e => e.Id.Equals(id))
-                .Include(e => e.ActedMovies)
-                .Include(e => e.DirectedMovies)
-                .FirstOrDefaultAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> MovieWorkerExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
+        public async Task<bool> MovieWorkerExists(int id)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", id }
+            };
 
-        public void CreateMovieWorker(MovieWorker MovieWorker) => Create(MovieWorker);
+            bool exists = (bool)(await ReadScalarAsync("MovieWorkerExists", paramDict) ?? false);
 
-        // Empty object is created to allow deleteing by Id. Rest of the details don't matter
-        // as long as the Id is the same, Ef core will delete the matching entity from the db
-        public void DeleteMovieWorker(int id) => Delete(new MovieWorker() { Id = id });
+            return exists;
+        }
 
-        public void UpdateMovieWorker(MovieWorker MovieWorker) => Update(MovieWorker);
+        public Task<bool> CreateMovieWorker(MovieWorker movieWorker)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "FullName", movieWorker.FullName },
+                { "PictureUrl", movieWorker.PictureUrl },
+            };
+
+            return InsertAsync<bool>("InsertMovieWorker", paramDict,
+                (newId) =>
+                {
+                    movieWorker.Id = newId;
+                    return true;
+                });
+        }
+
+        public Task<bool> UpdateMovieWorker(MovieWorker movieWorker)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "Id", movieWorker.Id },
+                { "FullName", movieWorker.FullName },
+                { "PictureUrl", movieWorker.PictureUrl }
+            };
+
+            return SetAsync<bool>("UpdateMovieWorker", paramDict,
+                (modified) => modified > 0);
+        }
+
+        public Task<bool> DeleteMovieWorker(int id)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object>
+            {
+                { "Id", id }
+            };
+
+            return SetAsync<bool>("DeleteMovieWorker", paramDict,
+                (modified) => modified > 0);
+        }
+
     }
 }

@@ -107,8 +107,13 @@ namespace MovieRestApiWithEF.Controllers
             var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
 
             // Create Movie Worker
-            _repositoryManager.MovieWorkerRepository.CreateMovieWorker(movieWorker);
-            await _repositoryManager.SaveAsync();
+            var success = await _repositoryManager.MovieWorkerRepository.CreateMovieWorker(movieWorker);
+
+            if (!success)
+            {
+                _logger.LogError($"Movie worker with title \"{movieWorkerReq.FullName}\" failed to be inserted.");
+                throw new InternalServerException("Movie worker failed to be created");
+            }
 
             // Convert newly created Model to Response DTO
             var movieWorkerResponse = _mapper.Map<MovieWorkerResponse>(movieWorker);
@@ -126,23 +131,18 @@ namespace MovieRestApiWithEF.Controllers
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
         public async Task<IActionResult> Update(int movieWorkerId, [FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
-            // Check if movie exists in db
-            var movieWorkerExists = await _repositoryManager
-                .MovieWorkerRepository
-                .MovieWorkerExists(movieWorkerId);
-            if (!movieWorkerExists)
-            {
-                _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
-                throw new NotFoundException("Movie worker not found");
-            }
-
             // Convert Request DTO to Model
             var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
             movieWorker.Id = movieWorkerId;
 
             // Update model
-            _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorker);
-            await _repositoryManager.SaveAsync();
+            var success = await _repositoryManager.MovieWorkerRepository.UpdateMovieWorker(movieWorker);
+            
+            if (!success)
+            {
+                _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
+                throw new NotFoundException("Movie worker not found");
+            }
 
             // Send 204 response
             return NoContent();
@@ -156,17 +156,14 @@ namespace MovieRestApiWithEF.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int movieWorkerId)
         {
-            // Check if model exists in db
-            var movieWorkerExists = await _repositoryManager.MovieWorkerRepository.MovieWorkerExists(movieWorkerId);
-            if (!movieWorkerExists)
+            // Delete model
+            var success = await _repositoryManager.MovieWorkerRepository.DeleteMovieWorker(movieWorkerId);
+
+            if (!success)
             {
                 _logger.LogError($"Movie worker with id: {movieWorkerId}, hasn't been found in db.");
                 throw new NotFoundException("Movie worker not found");
             }
-
-            // Delete model
-            _repositoryManager.MovieWorkerRepository.DeleteMovieWorker(movieWorkerId);
-            await _repositoryManager.SaveAsync();
 
             // Send 204 response
             return NoContent();

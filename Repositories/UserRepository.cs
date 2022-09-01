@@ -1,41 +1,161 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {
-        public UserRepository(MovieAppDbContext db) : base(db) { }
+        public UserRepository(MySqlDbContext db) : base(db) { }
 
         public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return await FindAll().ToListAsync();
+            return await ReadAsync("ReadAllUsers",
+                async (reader) =>
+                {
+                    var users = new List<User>();
+
+                    while (await reader.ReadAsync())
+                    {
+                        var user = new User()
+                        {
+                            Id = reader.GetInt32("Id"),
+                            Email = reader.GetString("Email"),
+                            Role = (UserRole)reader.GetInt32("Role"),
+                        };
+                        users.Add(user);
+                    }
+
+                    return users;
+                });
         }
 
         public async Task<User?> GetUserById(int id)
         {
-            return await FindByCondition(e => e.Id.Equals(id))
-                .FirstOrDefaultAsync();
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", id },
+                { "Email", null }
+            };
+
+            return await ReadAsync("ReadUser", paramDict,
+                async (reader) =>
+                {
+                    User? user = null;
+                    while (await reader.ReadAsync())
+                    {
+                        user = new User()
+                        {
+                            Id = reader.GetInt32("Id"),
+                            Email = reader.GetString("Email"),
+                            Role = (UserRole)reader.GetInt32("Role"),
+                        };
+                    }
+
+                    return user;
+                });
         }
 
         public async Task<User?> GetUserByEmail(string email)
         {
-            return await FindByCondition(e => e.Email.Equals(email))
-                .FirstOrDefaultAsync();
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", null },
+                { "Email", email }
+            };
+
+            return await ReadAsync("ReadUser", paramDict,
+                async (reader) =>
+                {
+                    User? user = null;
+                    while (await reader.ReadAsync())
+                    {
+                        user = new User()
+                        {
+                            Id = reader.GetInt32("Id"),
+                            Email = reader.GetString("Email"),
+                            Role = (UserRole)reader.GetInt32("Role"),
+                        };
+                    }
+
+                    return user;
+                });
         }
 
-        public async Task<bool> UserExists(string email) => await ExistsAsync(o => o.Email.Equals(email));
+        public async Task<bool> UserExists(string email)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", null },
+                { "Email", email }
+            };
 
-        public async Task<bool> UserExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
+            bool exists = (bool)(await ReadScalarAsync("UserExists", paramDict) ?? false);
 
-        public void CreateUser(User User) => Create(User);
+            return exists;
+        }
 
-        // Empty object is created to allow deleteing by Id. Rest of the details don't matter
-        // as long as the Id is the same, Ef core will delete the matching entity from the db
-        public void DeleteUser(int id) => Delete(new User() { Id = id });
+        public async Task<bool> UserExists(int id)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", id },
+                { "Email", null }
+            };
 
-        public void UpdateUser(User User) => Update(User);
+            bool exists = (bool)(await ReadScalarAsync("UserExists", paramDict) ?? false);
+
+            return exists;
+        }
+
+        public Task<bool> CreateUser(User user)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Email", user.Email },
+                { "Password", user.Password },
+                { "Role", user.Role }
+            };
+
+            return InsertAsync<bool>("InsertUser", paramDict,
+                (newId) =>
+                {
+                    user.Id = newId;
+                    return true;
+                });
+        }
+
+        public Task<bool> UpdateUser(User user)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", user.Id },
+                { "Email", user.Email },
+                { "Password", user.Password },
+                { "Role", user.Role }
+            };
+
+            return SetAsync("UpdateUser", paramDict,
+                (modified) => modified > 0);
+        }
+
+        public Task<bool> DeleteUser(int id)
+        {
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", id }
+            };
+
+            return SetAsync<bool>("DeleteUser", paramDict,
+                (modified) => modified > 0);
+        }
+
     }
 }
