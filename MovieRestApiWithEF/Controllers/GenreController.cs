@@ -74,32 +74,24 @@ namespace MovieRestApiWithEF.Controllers
         [HttpGet("{id}/movies")]
         public async Task<IActionResult> GetOneWithMovies(int id)
         {
-            try
+            // Fetch model with nested properties from db
+            var genre = await _repositoryManager.GenreRepository.GetGenreMovies(id);
+
+            // Check if model exists
+            if (genre is null)
             {
-                // Fetch model with nested properties from db
-                var genre = await _repositoryManager.GenreRepository.GetGenreMovies(id);
-
-                // Check if model exists
-                if (genre is null)
-                {
-                    _logger.LogError($"Genre with id: {id}, hasn't been found in db.");
-                    throw new NotFoundException("Genre not found");
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned genre with id: {id}");
-
-                    // Convert Model to Response DTO
-                    var genreResult = _mapper.Map<GenreWithDetailsResponse>(genre);
-
-                    // Send 200 OK response
-                    return Ok(genreResult);
-                }
+                _logger.LogError($"Genre with id: {id}, hasn't been found in db.");
+                throw new NotFoundException("Genre not found");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Something went wrong inside Get One Genre with Movies action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogInfo($"Returned genre with id: {id}");
+
+                // Convert Model to Response DTO
+                var genreResult = _mapper.Map<GenreWithDetailsResponse>(genre);
+
+                // Send 200 OK response
+                return Ok(genreResult);
             }
         }
 

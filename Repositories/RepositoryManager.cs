@@ -5,7 +5,7 @@ namespace Repositories
 {
     public class RepositoryManager : IRepositoryManager
     {
-        private readonly MovieAppDbContext _dbContext;
+        private readonly MySqlDbContext _dbContext;
 
         // Holds a singleton instance of movie repository
         private IMovieRepository? _movie;
@@ -19,9 +19,9 @@ namespace Repositories
         // Holds a singleton instance of user repository
         private IUserRepository? _user;
 
-        public RepositoryManager(MovieAppDbContext MovieAppDbContext)
+        public RepositoryManager(MySqlDbContext db)
         {
-            _dbContext = MovieAppDbContext;
+            _dbContext = db;
         }
 
         public IMovieRepository MovieRepository
@@ -48,14 +48,14 @@ namespace Repositories
             get { return _movieWorker ??= new MovieWorkerRepository(_dbContext); }
         }
 
-        public async Task SaveAsync()
+        public Task SaveAsync()
         {
-            await _dbContext.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
         public void Save()
         {
-            _dbContext.SaveChanges();
+            throw new NotImplementedException();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Repositories
         public async Task<Movie?> GetMovieById(int id)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", id }
             };
@@ -65,7 +65,7 @@ namespace Repositories
                 { "Title", title }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("MovieExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("MovieExists", paramDict));
 
             return exists;
         }
@@ -79,7 +79,7 @@ namespace Repositories
                 { "Title", null }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("MovieExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("MovieExists", paramDict));
 
             return exists;
         }
@@ -87,7 +87,7 @@ namespace Repositories
         public Task<bool> CreateMovie(Movie movie)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Title", movie.Title },
                 { "ReleaseDate", movie.ReleaseDate },
@@ -95,7 +95,7 @@ namespace Repositories
                 { "DirectorId", movie.DirectorId }
             };
 
-            return InsertAsync<bool>("InsertMovie", paramDict,
+            return InsertAsync("InsertMovie", paramDict,
                 (newId) =>
                 {
                     movie.Id = newId;
@@ -106,7 +106,7 @@ namespace Repositories
         public Task<bool> UpdateMovie(Movie movie)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", movie.Id },
                 { "Title", movie.Title },
@@ -115,19 +115,19 @@ namespace Repositories
                 { "DirectorId", movie.DirectorId }
             };
 
-            return SetAsync<bool>("UpdateMovie", paramDict,
+            return InsertAsync("UpdateMovie", paramDict,
                 (modified) => modified > 0);
         }
 
         public Task<bool> DeleteMovie(int id)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", id }
             };
 
-            return SetAsync<bool>("DeleteMovie", paramDict,
+            return InsertAsync("DeleteMovie", paramDict,
                 (modified) => modified > 0);
         }
 

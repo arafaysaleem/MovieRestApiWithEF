@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using System.Collections.ObjectModel;
 
 namespace Repositories
 {
@@ -32,7 +33,7 @@ namespace Repositories
         public async Task<Genre?> GetGenreById(int id)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", id }
             };
@@ -54,9 +55,41 @@ namespace Repositories
                 });
         }
 
-        public Task<Genre?> GetGenreMovies(int id)
+        public async Task<Genre?> GetGenreMovies(int genreId)
         {
-            throw new NotImplementedException();
+            // Create params
+            var paramDict = new Dictionary<string, object?>
+            {
+                { "Id", genreId }
+            };
+
+            return await ReadAsync("ReadGenreMovies", paramDict,
+               async (reader) =>
+               {
+                   Genre? genre = null;
+
+                   while (await reader.ReadAsync())
+                   {
+                       genre ??= new Genre()
+                       {
+                           Id = reader.GetInt32("Id"),
+                           Name = reader.GetString("Name"),
+                           Movies = new Collection<Movie>(),
+                       };
+
+                       var movie = new Movie()
+                       {
+                           Id = reader.GetInt32(2),
+                           Title = reader.GetString("Title"),
+                           ReleaseDate = reader.GetDateTime("ReleaseDate"),
+                       };
+
+                       genre.Movies!.Add(movie);
+
+                   }
+
+                   return genre;
+               });
         }
 
         public async Task<bool> GenreExists(string name)
@@ -68,7 +101,7 @@ namespace Repositories
                 { "Name", name }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("GenreExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("GenreExists", paramDict));
 
             return exists;
         }
@@ -82,7 +115,7 @@ namespace Repositories
                 { "Name", null }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("GenreExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("GenreExists", paramDict));
 
             return exists;
         }
@@ -90,12 +123,12 @@ namespace Repositories
         public Task<bool> CreateGenre(Genre genre)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Name", genre.Name }
             };
 
-            return InsertAsync<bool>("InsertGenre", paramDict,
+            return InsertAsync("InsertGenre", paramDict,
                 (newId) =>
                 {
                     genre.Id = newId;
@@ -106,25 +139,25 @@ namespace Repositories
         public Task<bool> UpdateGenre(Genre genre)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", genre.Id },
                 { "Name", genre.Name }
             };
 
-            return SetAsync<bool>("UpdateGenre", paramDict,
+            return SetAsync("UpdateGenre", paramDict,
                 (modified) => modified > 0);
         }
 
         public Task<bool> DeleteGenre(int id)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", id }
             };
 
-            return SetAsync<bool>("DeleteGenre", paramDict,
+            return InsertAsync("DeleteGenre", paramDict,
                 (modified) => modified > 0);
         }
 

@@ -33,7 +33,7 @@ namespace Repositories
         public async Task<MovieWorker?> GetMovieWorkerById(int id)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", id }
             };
@@ -69,7 +69,7 @@ namespace Repositories
                 { "Id", id }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("MovieWorkerExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("MovieWorkerExists", paramDict));
 
             return exists;
         }
@@ -77,13 +77,13 @@ namespace Repositories
         public Task<bool> CreateMovieWorker(MovieWorker movieWorker)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "FullName", movieWorker.FullName },
                 { "PictureUrl", movieWorker.PictureUrl },
             };
 
-            return InsertAsync<bool>("InsertMovieWorker", paramDict,
+            return InsertAsync("InsertMovieWorker", paramDict,
                 (newId) =>
                 {
                     movieWorker.Id = newId;
@@ -94,26 +94,26 @@ namespace Repositories
         public Task<bool> UpdateMovieWorker(MovieWorker movieWorker)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", movieWorker.Id },
                 { "FullName", movieWorker.FullName },
                 { "PictureUrl", movieWorker.PictureUrl }
             };
 
-            return SetAsync<bool>("UpdateMovieWorker", paramDict,
+            return InsertAsync("UpdateMovieWorker", paramDict,
                 (modified) => modified > 0);
         }
 
         public Task<bool> DeleteMovieWorker(int id)
         {
             // Create params
-            var paramDict = new Dictionary<string, object>
+            var paramDict = new Dictionary<string, object?>
             {
                 { "Id", id }
             };
 
-            return SetAsync<bool>("DeleteMovieWorker", paramDict,
+            return InsertAsync("DeleteMovieWorker", paramDict,
                 (modified) => modified > 0);
         }
 

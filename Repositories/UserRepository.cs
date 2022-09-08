@@ -21,6 +21,7 @@ namespace Repositories
                         {
                             Id = reader.GetInt32("Id"),
                             Email = reader.GetString("Email"),
+                            Password = reader.GetString("Password"),
                             Role = (UserRole)reader.GetInt32("Role"),
                         };
                         users.Add(user);
@@ -49,6 +50,7 @@ namespace Repositories
                         {
                             Id = reader.GetInt32("Id"),
                             Email = reader.GetString("Email"),
+                            Password = reader.GetString("Password"),
                             Role = (UserRole)reader.GetInt32("Role"),
                         };
                     }
@@ -76,6 +78,7 @@ namespace Repositories
                         {
                             Id = reader.GetInt32("Id"),
                             Email = reader.GetString("Email"),
+                            Password = reader.GetString("Password"),
                             Role = (UserRole)reader.GetInt32("Role"),
                         };
                     }
@@ -93,7 +96,7 @@ namespace Repositories
                 { "Email", email }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("UserExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("UserExists", paramDict));
 
             return exists;
         }
@@ -107,7 +110,7 @@ namespace Repositories
                 { "Email", null }
             };
 
-            bool exists = (bool)(await ReadScalarAsync("UserExists", paramDict) ?? false);
+            bool exists = Convert.ToBoolean(await ReadScalarAsync("UserExists", paramDict));
 
             return exists;
         }
@@ -122,7 +125,7 @@ namespace Repositories
                 { "Role", user.Role }
             };
 
-            return InsertAsync<bool>("InsertUser", paramDict,
+            return InsertAsync("InsertUser", paramDict,
                 (newId) =>
                 {
                     user.Id = newId;
