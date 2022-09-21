@@ -5,22 +5,22 @@ namespace Contracts
 {
     public interface IMovieWorkerRepository
     {
-        Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(
+        Task<IEnumerable<MovieWorker>> GetAllAsync(
             Expression<Func<MovieWorker, bool>>? condition = null,
             bool details = false,
             bool tracking = false
         );
 
-        Task<MovieWorker?> GetMovieWorkerById(int id);
+        Task<MovieWorker?> GetByIdAsync(int id);
 
-        Task<MovieWorker?> GetMovieWorkerMovies(int id);
+        Task<MovieWorker?> GetMovieWorkerMoviesAsync(int id);
 
-        Task<bool> MovieWorkerExists(int id);
+        Task<bool> ExistsWithIdAsync(int id);
 
-        void CreateMovieWorker(MovieWorker MovieWorker);
+        void Create(MovieWorker MovieWorker);
 
-        void UpdateMovieWorker(MovieWorker MovieWorker);
+        void Update(MovieWorker MovieWorker);
 
-        void DeleteMovieWorker(int id);
+        void Delete(int id);
     }
 }

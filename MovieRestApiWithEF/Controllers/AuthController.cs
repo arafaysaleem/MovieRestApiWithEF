@@ -35,7 +35,7 @@ namespace MovieRestApiWithEF.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest loginReq)
         {
             // Check if email found
-            var user = await _repositoryManager.UserRepository.GetUserByEmail(loginReq.Email!);
+            var user = await _repositoryManager.UserRepository.GetByEmailAsync(loginReq.Email!);
             if (user == null)
             {
                 _logger.LogError($"User with email: {loginReq.Email}, hasn't been found in db.");

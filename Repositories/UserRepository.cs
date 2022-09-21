@@ -9,33 +9,33 @@ namespace Repositories
     {
         public UserRepository(MovieAppDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
             return await FindAll().ToListAsync();
         }
 
-        public async Task<User?> GetUserById(int id)
+        public async Task<User?> GetByIdAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<User?> GetByEmailAsync(string email)
         {
             return await FindByCondition(e => e.Email.Equals(email))
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UserExists(string email) => await ExistsAsync(o => o.Email.Equals(email));
+        public async Task<bool> ExistsWithEmailAsync(string email) => await ExistsAsync(o => o.Email.Equals(email));
 
-        public async Task<bool> UserExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
+        public async Task<bool> ExistsWithIdAsync(int id) => await ExistsAsync(o => o.Id.Equals(id));
 
-        public void CreateUser(User User) => Create(User);
+        public new void Create(User User) => base.Create(User);
 
         // Empty object is created to allow deleteing by Id. Rest of the details don't matter
         // as long as the Id is the same, Ef core will delete the matching entity from the db
-        public void DeleteUser(int id) => Delete(new User() { Id = id });
+        public void Delete(int id) => Delete(new User() { Id = id });
 
-        public void UpdateUser(User User) => Update(User);
+        public new void Update(User User) => base.Update(User);
     }
 }

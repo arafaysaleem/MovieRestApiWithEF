@@ -9,7 +9,7 @@ namespace Repositories
     {
         public MovieRepository(MovieAppDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<Movie>> GetAllMovies()
+        public async Task<IEnumerable<Movie>> FindAllAsync()
         {
             return await FindAll()
                 .Include(e => e.Cast)
@@ -18,7 +18,7 @@ namespace Repositories
                 .ToListAsync();
         }
 
-        public async Task<Movie?> GetMovieById(int id)
+        public async Task<Movie?> FindByIdAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .Include(e => e.Cast)
@@ -27,16 +27,16 @@ namespace Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> MovieExists(string title) => await ExistsAsync(o => o.Title.Equals(title));
+        public async Task<bool> ExistsWithTitleAsync(string title) => await ExistsAsync(o => o.Title.Equals(title));
 
-        public async Task<bool> MovieExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
+        public async Task<bool> ExistsWithIdAsync(int id) => await ExistsAsync(o => o.Id.Equals(id));
 
-        public void CreateMovie(Movie movie) => Create(movie);
+        public new void Create(Movie movie) => base.Create(movie);
 
         // Empty object is created to allow deleteing by Id. Rest of the details don't matter
         // as long as the Id is the same, Ef core will delete the matching entity from the db
-        public void DeleteMovie(int id) => Delete(new Movie() { Id = id });
+        public void Delete(int id) => Delete(new Movie() { Id = id });
 
-        public void UpdateMovie(Movie movie) => Update(movie);
+        public new void Update(Movie movie) => base.Update(movie);
     }
 }

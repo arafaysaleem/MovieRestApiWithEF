@@ -10,7 +10,7 @@ namespace Repositories
     {
         public MovieWorkerRepository(MovieAppDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<MovieWorker>> GetAllMovieWorkers(
+        public async Task<IEnumerable<MovieWorker>> GetAllAsync(
             Expression<Func<MovieWorker, bool>>? condition,
             bool details,
             bool tracking)
@@ -28,13 +28,13 @@ namespace Repositories
             return await results.ToListAsync();
         }
 
-        public async Task<MovieWorker?> GetMovieWorkerById(int id)
+        public async Task<MovieWorker?> GetByIdAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<MovieWorker?> GetMovieWorkerMovies(int id)
+        public async Task<MovieWorker?> GetMovieWorkerMoviesAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .Include(e => e.ActedMovies)
@@ -42,14 +42,14 @@ namespace Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> MovieWorkerExists(int id) => await ExistsAsync(o => o.Id.Equals(id));
+        public async Task<bool> ExistsWithIdAsync(int id) => await ExistsAsync(o => o.Id.Equals(id));
 
-        public void CreateMovieWorker(MovieWorker MovieWorker) => Create(MovieWorker);
+        public new void Create(MovieWorker MovieWorker) => base.Create(MovieWorker);
 
         // Empty object is created to allow deleteing by Id. Rest of the details don't matter
         // as long as the Id is the same, Ef core will delete the matching entity from the db
-        public void DeleteMovieWorker(int id) => Delete(new MovieWorker() { Id = id });
+        public void Delete(int id) => Delete(new MovieWorker() { Id = id });
 
-        public void UpdateMovieWorker(MovieWorker MovieWorker) => Update(MovieWorker);
+        public new void Update(MovieWorker MovieWorker) => base.Update(MovieWorker);
     }
 }

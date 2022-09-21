@@ -2,14 +2,14 @@
 
 namespace Contracts
 {
-    public interface IRepositoryBase<T>
+    public interface IRepositoryBase<TEntity>
     {
-        IQueryable<T> FindAll(bool tracking = false);
-        IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool tracking = false);
-        bool Exists(Expression<Func<T, bool>> expression);
-        public Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
-        void Create(T entity);
-        void Update(T entity);
-        void Delete(T entity);
+        IQueryable<TEntity> FindAll(bool tracking = false);
+        IQueryable<TEntity> FindByCondition(Expression<Func<TEntity, bool>> expression, bool tracking = false);
+        bool Exists(Expression<Func<TEntity, bool>> expression);
+        public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression);
+        void Create(TEntity entity);
+        void Update(TEntity entity);
+        void Delete(TEntity entity);
     }
 }

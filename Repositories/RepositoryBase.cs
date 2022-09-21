@@ -7,10 +7,10 @@ namespace Repositories
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected DbSet<T> DbSet;
-        public RepositoryBase(MovieAppDbContext MovieAppDbContext)
+        protected readonly DbSet<T> DbSet;
+        public RepositoryBase(MovieAppDbContext DbContext)
         {
-            DbSet = MovieAppDbContext.Set<T>();
+            DbSet = DbContext.Set<T>();
         }
 
         // Setting tracking to false disable change tracking for the returned entities

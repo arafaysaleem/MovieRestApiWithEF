@@ -28,10 +28,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get list of all Movies
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
             // Fetch all movies
-            var movies = await _repositoryManager.MovieRepository.GetAllMovies();
+            var movies = await _repositoryManager.MovieRepository.FindAllAsync();
             _logger.LogInfo($"Returned all movies from database.");
 
             // Convert Model to Response DTO
@@ -43,10 +43,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get Movie by Id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOne(int id)
+        public async Task<IActionResult> GetOneAsync(int id)
         {
             // Fetch movie
-            var movie = await _repositoryManager.MovieRepository.GetMovieById(id);
+            var movie = await _repositoryManager.MovieRepository.FindByIdAsync(id);
 
             // Check if movie not exists
             if (movie is null)
@@ -70,10 +70,10 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> Post([FromBody] MovieCreateRequest movieReq)
+        public async Task<IActionResult> PostAsync([FromBody] MovieCreateRequest movieReq)
         {
             // Check if already exists
-            var movieFound = await _repositoryManager.MovieRepository.MovieExists(movieReq.Title);
+            var movieFound = await _repositoryManager.MovieRepository.ExistsWithTitleAsync(movieReq.Title);
             if (movieFound)
             {
                 _logger.LogError($"Movie with title \"{movieReq.Title}\" already exists in db.");
@@ -82,7 +82,7 @@ namespace MovieRestApiWithEF.Controllers
 
             // Get Nested Models using Nested Ids From DTO
             var cast = await _repositoryManager.MovieWorkerRepository
-                .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+                .GetAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
             // Convert Request DTO to EFCore Model
             var movie = _mapper.Map<Movie>(movieReq);
@@ -91,14 +91,14 @@ namespace MovieRestApiWithEF.Controllers
             movie.Cast = (ICollection<MovieWorker>)cast;
 
             // Create Movie
-            _repositoryManager.MovieRepository.CreateMovie(movie);
+            _repositoryManager.MovieRepository.Create(movie);
             await _repositoryManager.SaveAsync();
 
             // Convert created movie to a Response DTO
             var movieResponse = _mapper.Map<MovieWithDetailsResponse>(movie);
 
             // Send response along with the location of the newly created resource and its id
-            return CreatedAtAction(nameof(GetOne), new { id = movieResponse.Id }, movieResponse);
+            return CreatedAtAction(nameof(GetOneAsync), new { id = movieResponse.Id }, movieResponse);
 
         }
 
@@ -109,10 +109,10 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPut("{movieId:int}")]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> Update(int movieId, [FromBody] MovieCreateRequest movieReq)
+        public async Task<IActionResult> UpdateAsync(int movieId, [FromBody] MovieCreateRequest movieReq)
         {
             // Check if already exists
-            var movieExists = await _repositoryManager.MovieRepository.MovieExists(movieId);
+            var movieExists = await _repositoryManager.MovieRepository.ExistsWithIdAsync(movieId);
             if (!movieExists)
             {
                 _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
@@ -125,13 +125,13 @@ namespace MovieRestApiWithEF.Controllers
 
             // Get Nested Models using Nested Ids From DTO
             var cast = await _repositoryManager.MovieWorkerRepository
-                .GetAllMovieWorkers(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+                .GetAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
             // Save Nested Models into Parent Model
             movieEntity.Cast = (ICollection<MovieWorker>)cast;
 
             // Update movie
-            _repositoryManager.MovieRepository.UpdateMovie(movieEntity);
+            _repositoryManager.MovieRepository.Update(movieEntity);
             await _repositoryManager.SaveAsync();
 
             // return 204 response
@@ -144,10 +144,10 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpDelete("{movieId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> Delete(int movieId)
+        public async Task<IActionResult> DeleteAsync(int movieId)
         {
             // Check if movie exists
-            var movieExists = await _repositoryManager.MovieRepository.MovieExists(movieId);
+            var movieExists = await _repositoryManager.MovieRepository.ExistsWithIdAsync(movieId);
             if (!movieExists)
             {
                 _logger.LogError($"Movie with id: {movieId}, hasn't been found in db.");
@@ -155,7 +155,7 @@ namespace MovieRestApiWithEF.Controllers
             }
 
             // Delete movie
-            _repositoryManager.MovieRepository.DeleteMovie(movieId);
+            _repositoryManager.MovieRepository.Delete(movieId);
             await _repositoryManager.SaveAsync();
 
             // Return 204 response

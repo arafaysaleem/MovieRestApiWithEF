@@ -4,20 +4,20 @@ namespace Contracts
 {
     public interface IGenreRepository
     {
-        Task<IEnumerable<Genre>> GetAllGenres(bool details = false);
+        Task<IEnumerable<Genre>> FindAllAsync(bool details = false);
 
-        Task<Genre?> GetGenreById(int id);
+        Task<Genre?> FindByIdAsync(int id);
 
-        Task<Genre?> GetGenreMovies(int id);
+        Task<Genre?> FindGenreMoviesAsync(int id);
 
-        Task<bool> GenreExists(string Name);
+        Task<bool> ExistsWithNameAsync(string Name);
 
-        Task<bool> GenreExists(int id);
+        Task<bool> ExistsWithIdAsync(int id);
 
-        void CreateGenre(Genre Genre);
+        void Create(Genre Genre);
 
-        void UpdateGenre(Genre Genre);
+        void Update(Genre Genre);
 
-        void DeleteGenre(int id);
+        void Delete(int id);
     }
 }

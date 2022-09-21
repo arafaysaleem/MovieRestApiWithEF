@@ -4,20 +4,20 @@ namespace Contracts
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAllUsers();
+        Task<IEnumerable<User>> GetAllAsync();
 
-        Task<User?> GetUserById(int id);
+        Task<User?> GetByIdAsync(int id);
 
-        Task<User?> GetUserByEmail(string email);
+        Task<User?> GetByEmailAsync(string email);
 
-        Task<bool> UserExists(string Email);
+        Task<bool> ExistsWithEmailAsync(string Email);
 
-        Task<bool> UserExists(int id);
+        Task<bool> ExistsWithIdAsync(int id);
 
-        void CreateUser(User User);
+        void Create(User User);
 
-        void UpdateUser(User User);
+        void Update(User User);
 
-        void DeleteUser(int id);
+        void Delete(int id);
     }
 }

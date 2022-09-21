@@ -4,18 +4,18 @@ namespace Contracts
 {
     public interface IMovieRepository
     {
-        Task<IEnumerable<Movie>> GetAllMovies();
+        Task<IEnumerable<Movie>> FindAllAsync();
 
-        Task<Movie?> GetMovieById(int id);
+        Task<Movie?> FindByIdAsync(int id);
 
-        Task<bool> MovieExists(string Title);
+        Task<bool> ExistsWithTitleAsync(string Title);
 
-        Task<bool> MovieExists(int id);
+        Task<bool> ExistsWithIdAsync(int id);
 
-        void CreateMovie(Movie movie);
+        void Create(Movie movie);
 
-        void UpdateMovie(Movie movie);
+        void Update(Movie movie);
 
-        void DeleteMovie(int id);
+        void Delete(int id);
     }
 }
