@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieRestApiWithEF", "Project\MovieRestApiWithEF.csproj", "{3858A4A4-AB96-45AA-92C3-16C6D6133E0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieRestApiWithEF", "MovieRestApiWithEF\MovieRestApiWithEF.csproj", "{3858A4A4-AB96-45AA-92C3-16C6D6133E0F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Contracts.csproj", "{5C2DC9B3-C6A6-4EA3-A26E-080319AF0476}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{B243D785-ABEB-4990-A6D0-E4A704643EF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repositories\Repositories.csproj", "{1CD4291B-48F0-418C-AEA1-B9D834D22696}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieRestApiWithEF.Tests", "MovieRestApiWithEF.Tests\MovieRestApiWithEF.Tests.csproj", "{D9F3115E-9256-4979-9F4C-C1FE440B9E3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{1CD4291B-48F0-418C-AEA1-B9D834D22696}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CD4291B-48F0-418C-AEA1-B9D834D22696}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CD4291B-48F0-418C-AEA1-B9D834D22696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9F3115E-9256-4979-9F4C-C1FE440B9E3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9F3115E-9256-4979-9F4C-C1FE440B9E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F3115E-9256-4979-9F4C-C1FE440B9E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9F3115E-9256-4979-9F4C-C1FE440B9E3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

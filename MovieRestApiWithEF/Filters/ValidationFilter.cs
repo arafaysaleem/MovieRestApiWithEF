@@ -9,8 +9,8 @@ namespace MovieRestApiWithEF.Filters
         public void OnActionExecuting(ActionExecutingContext context)
         {
             // Get the body passed to the request
-            var param = context.ActionArguments.SingleOrDefault();
-            
+            var param = context.ActionArguments.Last();
+
             // Check if body is missing
             if (param.Value == null)
             {

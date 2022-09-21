@@ -19,6 +19,18 @@ namespace MovieRestApiWithEF.Filters
                     body: objectResult.Value!
                 );
             }
+            else if (context.Result is NoContentResult noContentResult)
+            {
+                var result = new ObjectResult(null)
+                {
+                    Value = new ApiResponse(
+                        statusCode: HttpStatusCode.OK,
+                        message: "Request completed successfully",
+                        body: new { }
+                    ),
+                };
+                context.Result = result;
+            }
         }
     }
 }

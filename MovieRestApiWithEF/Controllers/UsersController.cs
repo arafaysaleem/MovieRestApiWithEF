@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieRestApiWithEF.Exceptions;
 
-namespace UserRestApiWithEF.Controllers
+namespace MovieRestApiWithEF.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
