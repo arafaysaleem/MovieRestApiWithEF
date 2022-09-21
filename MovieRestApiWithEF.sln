@@ -13,6 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entiti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositories\Repositories.csproj", "{1CD4291B-48F0-418C-AEA1-B9D834D22696}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieRestApiWithEF.Tests.Unit", "MovieRestApiWithEF.Tests\MovieRestApiWithEF.Tests.Unit.csproj", "{655516C3-7E1F-49D3-8773-677BA3BBF171}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3858A4A4-AB96-45AA-92C3-16C6D6133E0F} = {3858A4A4-AB96-45AA-92C3-16C6D6133E0F}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +44,10 @@ Global
 		{1CD4291B-48F0-418C-AEA1-B9D834D22696}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CD4291B-48F0-418C-AEA1-B9D834D22696}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CD4291B-48F0-418C-AEA1-B9D834D22696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{655516C3-7E1F-49D3-8773-677BA3BBF171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{655516C3-7E1F-49D3-8773-677BA3BBF171}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{655516C3-7E1F-49D3-8773-677BA3BBF171}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{655516C3-7E1F-49D3-8773-677BA3BBF171}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
