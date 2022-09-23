@@ -28,7 +28,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Get list of all Movies
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllMoviesAsync()
         {
             // Fetch all movies
             var movies = await _repositoryManager.MovieRepository.FindAllAsync();
@@ -43,7 +43,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Get Movie by Id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneAsync(int id)
+        public async Task<IActionResult> GetOneMovieAsync(int id)
         {
             // Fetch movie
             var movie = await _repositoryManager.MovieRepository.FindByIdAsync(id);
@@ -70,7 +70,7 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> PostAsync([FromBody] MovieCreateRequest movieReq)
+        public async Task<IActionResult> PostMovieAsync([FromBody] MovieCreateRequest movieReq)
         {
             // Check if already exists
             var movieFound = await _repositoryManager.MovieRepository.ExistsWithTitleAsync(movieReq.Title);
@@ -98,7 +98,7 @@ namespace MovieRestApiWithEF.Controllers
             var movieResponse = _mapper.Map<MovieWithDetailsResponse>(movie);
 
             // Send response along with the location of the newly created resource and its id
-            return CreatedAtAction(nameof(GetOneAsync), new { id = movieResponse.Id }, movieResponse);
+            return CreatedAtAction(nameof(GetOneMovieAsync), new { id = movieResponse.Id }, movieResponse);
 
         }
 
@@ -109,7 +109,7 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPut("{movieId:int}")]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> UpdateAsync(int movieId, [FromBody] MovieCreateRequest movieReq)
+        public async Task<IActionResult> UpdateMovieAsync(int movieId, [FromBody] MovieCreateRequest movieReq)
         {
             // Check if already exists
             var movieExists = await _repositoryManager.MovieRepository.ExistsWithIdAsync(movieId);
@@ -144,7 +144,7 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpDelete("{movieId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> DeleteAsync(int movieId)
+        public async Task<IActionResult> DeleteMovieAsync(int movieId)
         {
             // Check if movie exists
             var movieExists = await _repositoryManager.MovieRepository.ExistsWithIdAsync(movieId);

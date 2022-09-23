@@ -6,26 +6,26 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using MovieRestApiWithEF.Controllers;
+using MovieRestApiWithEF.Tests.Unit.Helpers;
 using System.Collections;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 {
-    public class GetAllAsyncTest
+    public class GetAllMoviesAsyncTest
     {
         private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly ILoggerManager _stubbedLogger;
         private readonly IMapper _mapper;
 
-        public GetAllAsyncTest()
+        public GetAllMoviesAsyncTest()
         {
             _mockRepositoryManager = new Mock<IRepositoryManager>();
             _stubbedLogger = new Mock<ILoggerManager>().Object;
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
-            _mapper = new Mapper(configuration);
+            _mapper = TestHelpers.GetTestAutoMapper();
         }
 
         [Fact]
-        public async Task GetAllAsync_FindsMovies_Returns200Status()
+        public async Task GetAllMoviesAsync_HasMovies_Returns200Status()
         {
             /// Arrange
 
@@ -40,7 +40,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             var sut = new MoviesController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
 
             /// Act
-            var result = await sut.GetAllAsync();
+            var result = await sut.GetAllMoviesAsync();
 
             /// Assert
             result.Should().NotBeNull();
@@ -49,7 +49,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         }
 
         [Fact]
-        public async Task GetAllAsync_FindsMovies_ReturnsMoviesWithDetails()
+        public async Task GetAllMoviesAsync_HasMovies_ReturnsMoviesWithDetails()
         {
             /// Arrange
 
@@ -64,15 +64,16 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             var sut = new MoviesController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
 
             /// Act
-            var okResult = await sut.GetAllAsync() as OkObjectResult;
+            var okResult = await sut.GetAllMoviesAsync() as OkObjectResult;
 
             /// Assert
             okResult.Should().NotBeNull();
+            okResult!.Value.Should().BeOfType<List<MovieWithDetailsResponse>>();
             okResult!.Value.Should().BeEquivalentTo(MoviesMockData.GetMoviesResponse());
         }
 
         [Fact]
-        public async Task GetAllAsync_NoMovies_Returns200Status()
+        public async Task GetAllMoviesAsync_HasNoMovies_Returns200Status()
         {
             /// Arrange
 
@@ -87,7 +88,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             var sut = new MoviesController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
 
             /// Act
-            var result = await sut.GetAllAsync();
+            var result = await sut.GetAllMoviesAsync();
 
             /// Assert
             result.Should().NotBeNull();
@@ -96,7 +97,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         }
 
         [Fact]
-        public async Task GetAllAsync_NoMovies_ReturnsEmptyMovies()
+        public async Task GetAllMoviesAsync_HasNoMovies_ReturnsEmptyMovies()
         {
             /// Arrange
 
@@ -111,11 +112,12 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             var sut = new MoviesController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
 
             /// Act
-            var okResult = await sut.GetAllAsync() as OkObjectResult;
+            var okResult = await sut.GetAllMoviesAsync() as OkObjectResult;
 
             /// Assert
             okResult.Should().NotBeNull();
-            okResult!.Value.Should().BeEquivalentTo(MoviesMockData.GetEmptyMoviesResponse());
+            okResult!.Value.Should().BeOfType<List<MovieWithDetailsResponse>>();
+            okResult!.Value.As<List<MovieWithDetailsResponse>>().Should().BeEmpty();
         }
     }
 }

@@ -70,6 +70,53 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             };
         }
 
+        public static Movie GetMovie()
+        {
+            return new Movie
+            {
+                Id = 1,
+                Title = "Movie 1",
+                ReleaseDate = DateTime,
+                DirectorId = 1,
+                GenreId = 1,
+                Director = new MovieWorker
+                {
+                    Id = 1,
+                    FullName = "Director 1",
+                    PictureUrl = "some-url",
+                },
+                Genre = new Genre
+                {
+                    Id = 1,
+                    Name = "Genre 1",
+                },
+                Cast = new List<MovieWorker>(),
+            };
+        }
+
+        public static MovieWithDetailsResponse GetMovieResponse()
+        {
+            return new MovieWithDetailsResponse
+            {
+                Id = 1,
+                Title = "Movie 1",
+                ReleaseDate = DateTime,
+                Director = new MovieWorkerResponse
+                {
+                    Id = 1,
+                    FullName = "Director 1",
+                    PictureUrl = "some-url"
+                },
+                Genre = new GenreResponse
+                {
+                    Id = 1,
+                    Name = "Genre 1",
+                },
+                Cast = new List<MovieWorkerResponse>(),
+            };
+        }
+
+
         public static List<MovieWithDetailsResponse> GetMoviesResponse()
         {
             return new List<MovieWithDetailsResponse>{
@@ -133,11 +180,6 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public static List<Movie> GetEmptyMovies()
         {
             return new List<Movie>();
-        }
-
-        public static List<MovieResponse> GetEmptyMoviesResponse()
-        {
-            return new List<MovieResponse>();
         }
     }
 }
