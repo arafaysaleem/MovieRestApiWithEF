@@ -1,48 +1,24 @@
-﻿using AutoMapper;
-using Contracts;
-using Entities.Models;
+﻿using Entities.Models;
 using Entities.Responses;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using MovieRestApiWithEF.Controllers;
 using MovieRestApiWithEF.Exceptions;
-using MovieRestApiWithEF.Tests.Unit.Helpers;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
 {
-    public class GetOneGenreWithMoviesAsyncTest
+    public class GetOneGenreWithMoviesAsyncTest : GenreControllerTestBase
     {
-        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
-        private readonly ILoggerManager _stubbedLogger;
-        private readonly IMapper _mapper;
-
-        public GetOneGenreWithMoviesAsyncTest()
-        {
-            _mockRepositoryManager = new Mock<IRepositoryManager>();
-            _stubbedLogger = new Mock<ILoggerManager>().Object;
-            _mapper = TestHelpers.GetTestAutoMapper();
-        }
-
         [Fact]
         public async Task GetOneGenreWithMoviesAsync_GenreFound_HasMovies_Returns200Status()
         {
             /// Arrange
             var mockGenre = GenresMockData.GetGenreWithMovies();
             var genreId = mockGenre.Id;
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
             /// Act
-            var result = await sut.GetOneGenreWithMoviesAsync(genreId);
+            var result = await _systemUnderTest.GetOneGenreWithMoviesAsync(genreId);
 
             /// Assert
             result.Should().NotBeNull();
@@ -56,19 +32,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             /// Arrange
             var mockGenre = GenresMockData.GetGenreWithMovies();
             var genreId = mockGenre.Id;
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
             /// Act
-            var okResult = await sut.GetOneGenreWithMoviesAsync(genreId) as OkObjectResult;
+            var okResult = await _systemUnderTest.GetOneGenreWithMoviesAsync(genreId) as OkObjectResult;
 
             /// Assert
             okResult.Should().NotBeNull();
@@ -83,19 +50,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             /// Arrange
             var mockGenre = GenresMockData.GetGenre();
             var genreId = mockGenre.Id;
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
             /// Act
-            var result = await sut.GetOneGenreWithMoviesAsync(genreId);
+            var result = await _systemUnderTest.GetOneGenreWithMoviesAsync(genreId);
 
             /// Assert
             result.Should().NotBeNull();
@@ -109,19 +67,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             /// Arrange
             var mockGenre = GenresMockData.GetGenre();
             var genreId = mockGenre.Id;
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
             /// Act
-            var okResult = await sut.GetOneGenreWithMoviesAsync(genreId) as OkObjectResult;
+            var okResult = await _systemUnderTest.GetOneGenreWithMoviesAsync(genreId) as OkObjectResult;
 
             /// Assert
             okResult.Should().NotBeNull();
@@ -138,19 +87,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetOneGenreWithMoviesAsync_GenreNotFound_ThrowsNotFoundException(int genreId)
         {
             /// Arrange
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindGenreMoviesAsync(It.IsAny<int>())).ReturnsAsync((Genre?)null);
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(It.IsAny<int>())).ReturnsAsync((Genre?)null);
 
             /// Act
-            var act = () => sut.GetOneGenreWithMoviesAsync(genreId);
+            var act = () => _systemUnderTest.GetOneGenreWithMoviesAsync(genreId);
 
             /// Assert
             await act.Should().ThrowAsync<NotFoundException>().WithMessage("*Genre*");

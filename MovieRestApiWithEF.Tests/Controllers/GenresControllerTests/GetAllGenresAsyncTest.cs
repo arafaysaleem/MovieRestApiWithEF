@@ -1,46 +1,20 @@
-﻿using AutoMapper;
-using Contracts;
-using Entities.Models;
-using Entities.Responses;
+﻿using Entities.Responses;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using MovieRestApiWithEF.Controllers;
-using MovieRestApiWithEF.Tests.Unit.Helpers;
-using System.Collections;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
 {
-    public class GetAllGenresAsyncTest
+    public class GetAllGenresAsyncTest : GenreControllerTestBase
     {
-        private readonly Mock<IRepositoryManager> _mockRepositoryManager;
-        private readonly ILoggerManager _stubbedLogger;
-        private readonly IMapper _mapper;
-
-        public GetAllGenresAsyncTest()
-        {
-            _mockRepositoryManager = new Mock<IRepositoryManager>();
-            _stubbedLogger = new Mock<ILoggerManager>().Object;
-            _mapper = TestHelpers.GetTestAutoMapper();
-        }
-
         [Fact]
         public async Task GetAllGenresAsync_WithoutDetails_HasGenres_Returns200Status()
         {
             /// Arrange
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetGenres());
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetGenres());
 
             /// Act
-            var result = await sut.GetAllGenresAsync();
+            var result = await _systemUnderTest.GetAllGenresAsync();
 
             /// Assert
             result.Should().NotBeNull();
@@ -52,19 +26,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetAllGenresAsync_WithoutDetails_HasGenres_ReturnsGenres()
         {
             /// Arrange
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetGenres());
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetGenres());
 
             /// Act
-            var okResult = await sut.GetAllGenresAsync() as OkObjectResult;
+            var okResult = await _systemUnderTest.GetAllGenresAsync() as OkObjectResult;
 
             /// Assert
             okResult.Should().NotBeNull();
@@ -76,19 +41,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetAllGenresAsync_HasNoGenres_Returns200Status()
         {
             /// Arrange
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetEmptyGenres());
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetEmptyGenres());
 
             /// Act
-            var result = await sut.GetAllGenresAsync();
+            var result = await _systemUnderTest.GetAllGenresAsync();
 
             /// Assert
             result.Should().NotBeNull();
@@ -100,19 +56,10 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetAllGenresAsync_HasNoGenres_ReturnsEmptyGenres()
         {
             /// Arrange
-
-            // Prepare GenreRepository mock
-            var mockGenreRepo = new Mock<IGenreRepository>();
-            mockGenreRepo.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetEmptyGenres());
-
-            // Prepare IoC container mock
-            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(mockGenreRepo.Object);
-
-            // Prepare System under test (sut)
-            var sut = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _mockGenreRepository.Setup(x => x.FindAllAsync(false)).ReturnsAsync(GenresMockData.GetEmptyGenres());
 
             /// Act
-            var okResult = await sut.GetAllGenresAsync() as OkObjectResult;
+            var okResult = await _systemUnderTest.GetAllGenresAsync() as OkObjectResult;
 
             /// Assert
             okResult.Should().NotBeNull();
