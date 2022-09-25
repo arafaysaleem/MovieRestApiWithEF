@@ -13,7 +13,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasActedMovies_Returns200Status()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorkerWithActedMovies();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorkerWithActedMovies();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -30,7 +30,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasActedMovies_ReturnsMovieWorkerWithGivenIdWithActedMovies()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorkerWithActedMovies();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorkerWithActedMovies();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -41,14 +41,14 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeOfType<MovieWorkerWithDetailsResponse>();
             (okResult.Value as MovieWorkerWithDetailsResponse)!.Id.Should().Be(genreId);
-            (okResult.Value as MovieWorkerWithDetailsResponse)!.Should().BeEquivalentTo(MovieWorkersMockData.GetMovieWorkerWithActedMoviesResponse());
+            (okResult.Value as MovieWorkerWithDetailsResponse)!.Should().BeEquivalentTo(MovieWorkersMockData.SingleMovieWorkerWithActedMoviesResponse());
         }
 
         [Fact]
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasNoActedMovies_Returns200Status()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorker();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorker();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -65,7 +65,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasNoActedMovies_ReturnsMovieWorkerWithGivenIdWithEmptyActedMovies()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorker();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorker();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -84,7 +84,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasDirectedMovies_Returns200Status()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorkerWithDirectedMovies();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorkerWithDirectedMovies();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -101,7 +101,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasDirectedMovies_ReturnsMovieWorkerWithGivenIdWithDirectedMovies()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorkerWithDirectedMovies();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorkerWithDirectedMovies();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -112,14 +112,14 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeOfType<MovieWorkerWithDetailsResponse>();
             (okResult.Value as MovieWorkerWithDetailsResponse)!.Id.Should().Be(genreId);
-            (okResult.Value as MovieWorkerWithDetailsResponse)!.Should().BeEquivalentTo(MovieWorkersMockData.GetMovieWorkerWithDirectedMoviesResponse());
+            (okResult.Value as MovieWorkerWithDetailsResponse)!.Should().BeEquivalentTo(MovieWorkersMockData.SingleMovieWorkerWithDirectedMoviesResponse());
         }
 
         [Fact]
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasNoDirectedMovies_Returns200Status()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorker();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorker();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -136,7 +136,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasNoDirectedMovies_ReturnsMovieWorkerWithGivenIdWithEmptyDirectedMovies()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorker();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorker();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindMovieWorkerMoviesAsync(genreId)).ReturnsAsync(mockMovieWorker);
 

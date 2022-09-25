@@ -7,7 +7,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
     {
         private static DateTime TestDateTime = DateTime.Now;
 
-        public static List<Genre> GetGenres()
+        public static List<Genre> AllGenres()
         {
             return new List<Genre>{
                  new Genre{
@@ -25,7 +25,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             };
         }
 
-        public static List<GenreResponse> GetGenresResponse()
+        public static List<GenreResponse> AllGenresResponse()
         {
             return new List<GenreResponse>{
                  new GenreResponse
@@ -46,12 +46,12 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             };
         }
 
-        public static List<Genre> GetEmptyGenres()
+        public static List<Genre> EmptyGenres()
         {
             return new List<Genre>();
         }
 
-        public static Genre GetGenre()
+        public static Genre SingleGenre()
         {
             return new Genre
             {
@@ -60,7 +60,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             };
         }
 
-        public static GenreResponse GetGenreResponse()
+        public static GenreResponse SingleGenreResponse()
         {
             return new GenreResponse
             {
@@ -69,7 +69,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             };
         }
 
-        public static Genre GetGenreWithMovies()
+        public static Genre SingleGenreWithMovies()
         {
             return new Genre
             {
@@ -93,7 +93,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             };
         }
 
-        public static GenreWithDetailsResponse GetGenreWithMoviesResponse()
+        public static GenreWithDetailsResponse SingleGenreWithMoviesResponse()
         {
             return new GenreWithDetailsResponse
             {
@@ -117,7 +117,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             };
         }
 
-        public static GenreWithDetailsResponse GetGenreWithEmptyMoviesResponse()
+        public static GenreWithDetailsResponse SingleGenreWithEmptyMoviesResponse()
         {
             return new GenreWithDetailsResponse
             {

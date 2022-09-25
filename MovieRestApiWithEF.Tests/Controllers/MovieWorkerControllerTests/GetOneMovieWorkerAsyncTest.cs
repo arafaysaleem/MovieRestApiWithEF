@@ -13,7 +13,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerAsync_MovieWorkerFound_Returns200Status()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorker();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorker();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindByIdAsync(genreId)).ReturnsAsync(mockMovieWorker);
 
@@ -30,7 +30,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         public async Task GetOneMovieWorkerAsync_MovieWorkerFound_ReturnsMovieWorkerWithGivenId()
         {
             /// Arrange
-            var mockMovieWorker = MovieWorkersMockData.GetMovieWorker();
+            var mockMovieWorker = MovieWorkersMockData.SingleMovieWorker();
             var genreId = mockMovieWorker.Id;
             _mockMovieWorkerRepository.Setup(x => x.FindByIdAsync(genreId)).ReturnsAsync(mockMovieWorker);
 

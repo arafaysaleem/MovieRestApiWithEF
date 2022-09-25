@@ -13,7 +13,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetOneGenreAsync_GenreFound_Returns200Status()
         {
             /// Arrange
-            var mockGenre = GenresMockData.GetGenre();
+            var mockGenre = GenresMockData.SingleGenre();
             var genreId = mockGenre.Id;
             _mockGenreRepository.Setup(x => x.FindByIdAsync(genreId)).ReturnsAsync(mockGenre);
 
@@ -30,7 +30,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetOneGenreAsync_GenreFound_ReturnsGenreWithGivenId()
         {
             /// Arrange
-            var mockGenre = GenresMockData.GetGenre();
+            var mockGenre = GenresMockData.SingleGenre();
             var genreId = mockGenre.Id;
             _mockGenreRepository.Setup(x => x.FindByIdAsync(genreId)).ReturnsAsync(mockGenre);
 

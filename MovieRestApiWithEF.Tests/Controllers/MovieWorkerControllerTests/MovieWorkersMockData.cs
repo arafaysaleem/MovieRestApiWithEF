@@ -7,7 +7,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
     {
         private static DateTime TestDateTime = DateTime.Now;
 
-        public static List<MovieWorker> GetMovieWorkers()
+        public static List<MovieWorker> AllMovieWorkers()
         {
             return new List<MovieWorker>{
                  new MovieWorker{ Id = 1, FullName = "MovieWorker 1", PictureUrl = "www.some-url.com/avatar" },
@@ -16,7 +16,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             };
         }
 
-        public static List<MovieWorkerResponse> GetMovieWorkersResponse()
+        public static List<MovieWorkerResponse> AllMovieWorkersResponse()
         {
             return new List<MovieWorkerResponse>{
                  new MovieWorkerResponse { Id = 1, FullName = "MovieWorker 1", PictureUrl = "www.some-url.com/avatar" },
@@ -25,22 +25,22 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             };
         }
 
-        public static List<MovieWorker> GetEmptyMovieWorkers()
+        public static List<MovieWorker> EmptyMovieWorkers()
         {
             return new List<MovieWorker>();
         }
 
-        public static MovieWorker GetMovieWorker()
+        public static MovieWorker SingleMovieWorker()
         {
             return new MovieWorker { Id = 1, FullName = "MovieWorker 1", PictureUrl = "www.some-url.com/avatar" };
         }
 
-        public static MovieWorkerResponse GetMovieWorkerResponse()
+        public static MovieWorkerResponse SingleMovieWorkerResponse()
         {
             return new MovieWorkerResponse { Id = 1, FullName = "MovieWorker 1", PictureUrl = "www.some-url.com/avatar" };
         }
 
-        public static MovieWorker GetMovieWorkerWithActedMovies()
+        public static MovieWorker SingleMovieWorkerWithActedMovies()
         {
             return new MovieWorker
             {
@@ -54,7 +54,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             };
         }
 
-        public static MovieWorkerWithDetailsResponse GetMovieWorkerWithActedMoviesResponse()
+        public static MovieWorkerWithDetailsResponse SingleMovieWorkerWithActedMoviesResponse()
         {
             return new MovieWorkerWithDetailsResponse
             {
@@ -69,7 +69,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             };
         }
 
-        public static MovieWorker GetMovieWorkerWithDirectedMovies()
+        public static MovieWorker SingleMovieWorkerWithDirectedMovies()
         {
             return new MovieWorker
             {
@@ -83,7 +83,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             };
         }
 
-        public static MovieWorkerWithDetailsResponse GetMovieWorkerWithDirectedMoviesResponse()
+        public static MovieWorkerWithDetailsResponse SingleMovieWorkerWithDirectedMoviesResponse()
         {
             return new MovieWorkerWithDetailsResponse
             {

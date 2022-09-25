@@ -12,7 +12,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         {
             /// Arrange
             _mockMovieWorkerRepository.Setup(x => x.FindAllAsync(null, false, false))
-                                      .ReturnsAsync(MovieWorkersMockData.GetMovieWorkers());
+                                      .ReturnsAsync(MovieWorkersMockData.AllMovieWorkers());
 
             /// Act
             var result = await _systemUnderTest.GetAllMovieWorkersAsync();
@@ -28,7 +28,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         {
             /// Arrange
             _mockMovieWorkerRepository.Setup(x => x.FindAllAsync(null, false, false))
-                                      .ReturnsAsync(MovieWorkersMockData.GetMovieWorkers());
+                                      .ReturnsAsync(MovieWorkersMockData.AllMovieWorkers());
 
             /// Act
             var okResult = await _systemUnderTest.GetAllMovieWorkersAsync() as OkObjectResult;
@@ -36,7 +36,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
             /// Assert
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeOfType<List<MovieWorkerResponse>>();
-            okResult!.Value.Should().BeEquivalentTo(MovieWorkersMockData.GetMovieWorkersResponse());
+            okResult!.Value.Should().BeEquivalentTo(MovieWorkersMockData.AllMovieWorkersResponse());
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         {
             /// Arrange
             _mockMovieWorkerRepository.Setup(x => x.FindAllAsync(null, false, false))
-                                      .ReturnsAsync(MovieWorkersMockData.GetEmptyMovieWorkers());
+                                      .ReturnsAsync(MovieWorkersMockData.EmptyMovieWorkers());
 
             /// Act
             var result = await _systemUnderTest.GetAllMovieWorkersAsync();
@@ -60,7 +60,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
         {
             /// Arrange
             _mockMovieWorkerRepository.Setup(x => x.FindAllAsync(null, false, false))
-                                      .ReturnsAsync(MovieWorkersMockData.GetEmptyMovieWorkers());
+                                      .ReturnsAsync(MovieWorkersMockData.EmptyMovieWorkers());
 
             /// Act
             var okResult = await _systemUnderTest.GetAllMovieWorkersAsync() as OkObjectResult;

@@ -13,7 +13,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetOneGenreWithMoviesAsync_GenreFound_HasMovies_Returns200Status()
         {
             /// Arrange
-            var mockGenre = GenresMockData.GetGenreWithMovies();
+            var mockGenre = GenresMockData.SingleGenreWithMovies();
             var genreId = mockGenre.Id;
             _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
@@ -30,7 +30,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetOneGenreWithMoviesAsync_GenreFound_HasMovies_ReturnsGenreWithGivenIdWithMovies()
         {
             /// Arrange
-            var mockGenre = GenresMockData.GetGenreWithMovies();
+            var mockGenre = GenresMockData.SingleGenreWithMovies();
             var genreId = mockGenre.Id;
             _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
@@ -41,14 +41,14 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeOfType<GenreWithDetailsResponse>();
             (okResult.Value as GenreWithDetailsResponse)!.Id.Should().Be(genreId);
-            (okResult.Value as GenreWithDetailsResponse)!.Should().BeEquivalentTo(GenresMockData.GetGenreWithMoviesResponse());
+            (okResult.Value as GenreWithDetailsResponse)!.Should().BeEquivalentTo(GenresMockData.SingleGenreWithMoviesResponse());
         }
 
         [Fact]
         public async Task GetOneGenreWithMoviesAsync_GenreFound_HasNoMovies_Returns200Status()
         {
             /// Arrange
-            var mockGenre = GenresMockData.GetGenre();
+            var mockGenre = GenresMockData.SingleGenre();
             var genreId = mockGenre.Id;
             _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
@@ -65,7 +65,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
         public async Task GetOneGenreWithMoviesAsync_GenreFound_HasNoMovies_ReturnsGenreWithGivenIdWithoutMovies()
         {
             /// Arrange
-            var mockGenre = GenresMockData.GetGenre();
+            var mockGenre = GenresMockData.SingleGenre();
             var genreId = mockGenre.Id;
             _mockGenreRepository.Setup(x => x.FindGenreMoviesAsync(genreId)).ReturnsAsync(mockGenre);
 
@@ -77,7 +77,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
             okResult!.Value.Should().BeOfType<GenreWithDetailsResponse>();
             (okResult.Value as GenreWithDetailsResponse)!.Id.Should().Be(genreId);
             (okResult.Value as GenreWithDetailsResponse)!.Should()
-                                                         .BeEquivalentTo(GenresMockData.GetGenreWithEmptyMoviesResponse());
+                                                         .BeEquivalentTo(GenresMockData.SingleGenreWithEmptyMoviesResponse());
         }
 
         [Theory]
