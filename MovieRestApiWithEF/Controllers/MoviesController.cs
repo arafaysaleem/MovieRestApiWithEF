@@ -82,7 +82,7 @@ namespace MovieRestApiWithEF.Controllers
 
             // Get Nested Models using Nested Ids From DTO
             var cast = await _repositoryManager.MovieWorkerRepository
-                .GetAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+                .FindAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
             // Convert Request DTO to EFCore Model
             var movie = _mapper.Map<Movie>(movieReq);
@@ -125,7 +125,7 @@ namespace MovieRestApiWithEF.Controllers
 
             // Get Nested Models using Nested Ids From DTO
             var cast = await _repositoryManager.MovieWorkerRepository
-                .GetAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+                .FindAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
 
             // Save Nested Models into Parent Model
             movieEntity.Cast = (ICollection<MovieWorker>)cast;

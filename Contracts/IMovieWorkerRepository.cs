@@ -5,15 +5,15 @@ namespace Contracts
 {
     public interface IMovieWorkerRepository
     {
-        Task<IEnumerable<MovieWorker>> GetAllAsync(
+        Task<IEnumerable<MovieWorker>> FindAllAsync(
             Expression<Func<MovieWorker, bool>>? condition = null,
             bool details = false,
             bool tracking = false
         );
 
-        Task<MovieWorker?> GetByIdAsync(int id);
+        Task<MovieWorker?> FindByIdAsync(int id);
 
-        Task<MovieWorker?> GetMovieWorkerMoviesAsync(int id);
+        Task<MovieWorker?> FindMovieWorkerMoviesAsync(int id);
 
         Task<bool> ExistsWithIdAsync(int id);
 

@@ -10,7 +10,7 @@ namespace Repositories
     {
         public MovieWorkerRepository(MovieAppDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<MovieWorker>> GetAllAsync(
+        public async Task<IEnumerable<MovieWorker>> FindAllAsync(
             Expression<Func<MovieWorker, bool>>? condition,
             bool details,
             bool tracking)
@@ -28,13 +28,13 @@ namespace Repositories
             return await results.ToListAsync();
         }
 
-        public async Task<MovieWorker?> GetByIdAsync(int id)
+        public async Task<MovieWorker?> FindByIdAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<MovieWorker?> GetMovieWorkerMoviesAsync(int id)
+        public async Task<MovieWorker?> FindMovieWorkerMoviesAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .Include(e => e.ActedMovies)

@@ -28,10 +28,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get list of all MovieWorkers
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllMovieWorkersAsync()
         {
             // Fetch all models from db
-            var movieWorkers = await _repositoryManager.MovieWorkerRepository.GetAllAsync();
+            var movieWorkers = await _repositoryManager.MovieWorkerRepository.FindAllAsync();
             _logger.LogInfo($"Returned all MovieWorkers from database.");
 
             // Convert Models to Response DTO
@@ -45,10 +45,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get MovieWorker by Id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneAsync(int id)
+        public async Task<IActionResult> GetOneMovieWorkerAsync(int id)
         {
             // Fetch model from db
-            var movieWorker = await _repositoryManager.MovieWorkerRepository.GetByIdAsync(id);
+            var movieWorker = await _repositoryManager.MovieWorkerRepository.FindByIdAsync(id);
 
             // Check if model not found
             if (movieWorker is null)
@@ -72,10 +72,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get All Movies of a MovieWorker by Id
         /// </summary>
         [HttpGet("{id}/movies")]
-        public async Task<IActionResult> GetOneWithMoviesAsync(int id)
+        public async Task<IActionResult> GetOneMovieWorkerWithMoviesAsync(int id)
         {
             // Fetch model with nested details from db
-            var movieWorker = await _repositoryManager.MovieWorkerRepository.GetMovieWorkerMoviesAsync(id);
+            var movieWorker = await _repositoryManager.MovieWorkerRepository.FindMovieWorkerMoviesAsync(id);
 
             // Check if model not found
             if (movieWorker is null)
@@ -101,7 +101,7 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> PostAsync([FromBody] MovieWorkerCreateRequest movieWorkerReq)
+        public async Task<IActionResult> PostMovieWorkerAsync([FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
             // Convert Request DTO to Model
             var movieWorker = _mapper.Map<MovieWorker>(movieWorkerReq);
@@ -114,7 +114,7 @@ namespace MovieRestApiWithEF.Controllers
             var movieWorkerResponse = _mapper.Map<MovieWorkerResponse>(movieWorker);
 
             // Send model with status 201 Created and location of newly created resource and its id
-            return CreatedAtAction(nameof(GetOneAsync), new { id = movieWorkerResponse.Id }, movieWorkerResponse);
+            return CreatedAtAction(nameof(GetOneMovieWorkerAsync), new { id = movieWorkerResponse.Id }, movieWorkerResponse);
         }
 
         // <summary>
@@ -124,7 +124,7 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPut("{movieWorkerId:int}")]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> UpdateAsync(int movieWorkerId, [FromBody] MovieWorkerCreateRequest movieWorkerReq)
+        public async Task<IActionResult> UpdateMovieWorkerAsync(int movieWorkerId, [FromBody] MovieWorkerCreateRequest movieWorkerReq)
         {
             // Check if movie exists in db
             var movieWorkerExists = await _repositoryManager
@@ -154,7 +154,7 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpDelete("{movieWorkerId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> DeleteAsync(int movieWorkerId)
+        public async Task<IActionResult> DeleteMovieWorkerAsync(int movieWorkerId)
         {
             // Check if model exists in db
             var movieWorkerExists = await _repositoryManager.MovieWorkerRepository.ExistsWithIdAsync(movieWorkerId);
