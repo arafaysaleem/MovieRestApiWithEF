@@ -28,7 +28,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Get list of all Genres
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllGenresAsync()
         {
             // Fetch all models
             var genres = await _repositoryManager.GenreRepository.FindAllAsync();
@@ -45,7 +45,7 @@ namespace MovieRestApiWithEF.Controllers
         /// Get Genre by Id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneAsync(int id)
+        public async Task<IActionResult> GetOneGenreAsync(int id)
         {
             // Fetch model from db
             var genre = await _repositoryManager.GenreRepository.FindByIdAsync(id);
@@ -72,34 +72,26 @@ namespace MovieRestApiWithEF.Controllers
         /// Get All Movies Of a Genre by Id
         /// </summary>
         [HttpGet("{id}/movies")]
-        public async Task<IActionResult> GetOneWithMoviesAsync(int id)
+        public async Task<IActionResult> GetOneGenreWithMoviesAsync(int id)
         {
-            try
+            // Fetch model with nested properties from db
+            var genre = await _repositoryManager.GenreRepository.FindGenreMoviesAsync(id);
+
+            // Check if model exists
+            if (genre is null)
             {
-                // Fetch model with nested properties from db
-                var genre = await _repositoryManager.GenreRepository.FindGenreMoviesAsync(id);
-
-                // Check if model exists
-                if (genre is null)
-                {
-                    _logger.LogError($"Genre with id: {id}, hasn't been found in db.");
-                    throw new NotFoundException("Genre not found");
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned genre with id: {id}");
-
-                    // Convert Model to Response DTO
-                    var genreResult = _mapper.Map<GenreWithDetailsResponse>(genre);
-
-                    // Send 200 OK response
-                    return Ok(genreResult);
-                }
+                _logger.LogError($"Genre with id: {id}, hasn't been found in db.");
+                throw new NotFoundException("Genre not found");
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"Something went wrong inside Get One Genre with Movies action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                _logger.LogInfo($"Returned genre with id: {id}");
+
+                // Convert Model to Response DTO
+                var genreResult = _mapper.Map<GenreWithDetailsResponse>(genre);
+
+                // Send 200 OK response
+                return Ok(genreResult);
             }
         }
 
@@ -109,7 +101,7 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> PostAsync([FromBody] GenreCreateRequest genreReq)
+        public async Task<IActionResult> PostGenreAsync([FromBody] GenreCreateRequest genreReq)
         {
             // Check if model exists in db
             var genreFound = await _repositoryManager.GenreRepository.ExistsWithNameAsync(genreReq.Name);
@@ -130,7 +122,7 @@ namespace MovieRestApiWithEF.Controllers
             var genreResponse = _mapper.Map<GenreResponse>(genre);
 
             // Send response with 201 OK and location of newly created resource and its id
-            return CreatedAtAction(nameof(GetOneAsync), new { id = genreResponse.Id }, genreResponse);
+            return CreatedAtAction(nameof(GetOneGenreAsync), new { id = genreResponse.Id }, genreResponse);
         }
 
         // <summary>
@@ -140,7 +132,7 @@ namespace MovieRestApiWithEF.Controllers
         [HttpPut("{genreId:int}")]
         [Authorize(Policy = "AdminOnly")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> UpdateAsync(int genreId, [FromBody] GenreCreateRequest genreReq)
+        public async Task<IActionResult> UpdateGenreAsync(int genreId, [FromBody] GenreCreateRequest genreReq)
         {
             // Check if model exists in db
             var genreExists = await _repositoryManager.GenreRepository.ExistsWithIdAsync(genreId);
@@ -168,7 +160,7 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpDelete("{genreId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> DeleteAsync(int genreId)
+        public async Task<IActionResult> DeleteGenreAsync(int genreId)
         {
             // Check if model exists in db
             var genreExists = await _repositoryManager.GenreRepository.ExistsWithIdAsync(genreId);

@@ -11,13 +11,13 @@ using MovieRestApiWithEF.Tests.Unit.Helpers;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 {
-    public class GetOneMovieAsyncTest
+    public class GetOneGenreAsyncTest
     {
         private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly ILoggerManager _stubbedLogger;
         private readonly IMapper _mapper;
 
-        public GetOneMovieAsyncTest()
+        public GetOneGenreAsyncTest()
         {
             _mockRepositoryManager = new Mock<IRepositoryManager>();
             _stubbedLogger = new Mock<ILoggerManager>().Object;
@@ -28,7 +28,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetOneMovieAsync_MovieFound_Returns200Status()
         {
             /// Arrange
-            var mockMovie = MoviesMockData.GetMovie();
+            var mockMovie = GenresMockData.GetMovie();
             var movieId = mockMovie.Id;
 
             // Prepare MovieRepository mock
@@ -54,7 +54,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetOneMovieAsync_MovieFound_ReturnsMovieWithGivenId()
         {
             /// Arrange
-            var mockMovie = MoviesMockData.GetMovie();
+            var mockMovie = GenresMockData.GetMovie();
             var movieId = mockMovie.Id;
 
             // Prepare MovieRepository mock

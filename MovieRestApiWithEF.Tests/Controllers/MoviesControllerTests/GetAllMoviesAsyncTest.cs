@@ -11,13 +11,13 @@ using System.Collections;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 {
-    public class GetAllMoviesAsyncTest
+    public class GetAllGenresAsyncTest
     {
         private readonly Mock<IRepositoryManager> _mockRepositoryManager;
         private readonly ILoggerManager _stubbedLogger;
         private readonly IMapper _mapper;
 
-        public GetAllMoviesAsyncTest()
+        public GetAllGenresAsyncTest()
         {
             _mockRepositoryManager = new Mock<IRepositoryManager>();
             _stubbedLogger = new Mock<ILoggerManager>().Object;
@@ -31,7 +31,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 
             // Prepare MovieRepository mock
             var mockMovieRepo = new Mock<IMovieRepository>();
-            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.GetMovies());
+            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.GetMovies());
 
             // Prepare IoC container mock
             _mockRepositoryManager.Setup(x => x.MovieRepository).Returns(mockMovieRepo.Object);
@@ -55,7 +55,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 
             // Prepare MovieRepository mock
             var mockMovieRepo = new Mock<IMovieRepository>();
-            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.GetMovies());
+            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.GetMovies());
 
             // Prepare IoC container mock
             _mockRepositoryManager.Setup(x => x.MovieRepository).Returns(mockMovieRepo.Object);
@@ -69,7 +69,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             /// Assert
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeOfType<List<MovieWithDetailsResponse>>();
-            okResult!.Value.Should().BeEquivalentTo(MoviesMockData.GetMoviesResponse());
+            okResult!.Value.Should().BeEquivalentTo(GenresMockData.GetMoviesResponse());
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 
             // Prepare MovieRepository mock
             var mockMovieRepo = new Mock<IMovieRepository>();
-            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.GetEmptyMovies());
+            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.GetEmptyMovies());
 
             // Prepare IoC container mock
             _mockRepositoryManager.Setup(x => x.MovieRepository).Returns(mockMovieRepo.Object);
@@ -103,7 +103,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 
             // Prepare MovieRepository mock
             var mockMovieRepo = new Mock<IMovieRepository>();
-            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.GetEmptyMovies());
+            mockMovieRepo.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.GetEmptyMovies());
 
             // Prepare IoC container mock
             _mockRepositoryManager.Setup(x => x.MovieRepository).Returns(mockMovieRepo.Object);
