@@ -7,7 +7,7 @@ using MovieRestApiWithEF.Exceptions;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
 {
-    public class GetOneMovieWorkerWithMoviesAsyncTest : MovieWorkerControllerTestBase
+    public class GetOneMovieWorkerWithMoviesAsyncTest : MovieWorkersControllerTestBase
     {
         [Fact]
         public async Task GetOneMovieWorkerWithMoviesAsync_MovieWorkerFound_HasActedMovies_Returns200Status()

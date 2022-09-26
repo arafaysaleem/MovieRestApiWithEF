@@ -5,7 +5,7 @@ using Moq;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
 {
-    public class GetAllGenresAsyncTest : GenreControllerTestBase
+    public class GetAllGenresAsyncTest : GenresControllerTestBase
     {
         [Fact]
         public async Task GetAllGenresAsync_WithoutDetails_HasGenres_Returns200Status()

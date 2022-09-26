@@ -4,31 +4,31 @@ using Moq;
 using MovieRestApiWithEF.Controllers;
 using MovieRestApiWithEF.Tests.Unit.Helpers;
 
-namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
+namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
 {
-    public class MovieWorkerControllerTestBase
+    public class GenresControllerTestBase
     {
         protected readonly Mock<IRepositoryManager> _mockRepositoryManager;
-        protected readonly Mock<IMovieWorkerRepository> _mockMovieWorkerRepository;
+        protected readonly Mock<IGenreRepository> _mockGenreRepository;
         protected readonly ILoggerManager _stubbedLogger;
         protected readonly IMapper _mapper;
-        protected readonly MovieWorkersController _systemUnderTest;
+        protected readonly GenresController _systemUnderTest;
 
-        public MovieWorkerControllerTestBase()
+        public GenresControllerTestBase()
         {
             // Prepare Logger and Mapper mocks
             _stubbedLogger = new Mock<ILoggerManager>().Object;
             _mapper = TestHelpers.GetTestAutoMapper();
 
             // Initialize Repository mock
-            _mockMovieWorkerRepository = new Mock<IMovieWorkerRepository>();
+            _mockGenreRepository = new Mock<IGenreRepository>();
 
             // Prepare IoC container mock
             _mockRepositoryManager = new Mock<IRepositoryManager>();
-            _mockRepositoryManager.Setup(x => x.MovieWorkerRepository).Returns(_mockMovieWorkerRepository.Object);
+            _mockRepositoryManager.Setup(x => x.GenreRepository).Returns(_mockGenreRepository.Object);
 
             // Prepare System under test (sut)
-            _systemUnderTest = new MovieWorkersController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
+            _systemUnderTest = new GenresController(_mockRepositoryManager.Object, _stubbedLogger, _mapper);
         }
     }
 }

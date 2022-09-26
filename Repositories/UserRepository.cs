@@ -9,18 +9,18 @@ namespace Repositories
     {
         public UserRepository(MovieAppDbContext db) : base(db) { }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> FindAllAsync()
         {
             return await FindAll().ToListAsync();
         }
 
-        public async Task<User?> GetByIdAsync(int id)
+        public async Task<User?> FindByIdAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<User?> GetByEmailAsync(string email)
+        public async Task<User?> FindByEmailAsync(string email)
         {
             return await FindByCondition(e => e.Email.Equals(email))
                 .FirstOrDefaultAsync();

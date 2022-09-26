@@ -25,10 +25,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get list of all Users
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllUsersAsync()
         {
             // Fetch all users
-            var users = await _repositoryManager.UserRepository.GetAllAsync();
+            var users = await _repositoryManager.UserRepository.FindAllAsync();
             _logger.LogInfo($"Returned all users from database.");
 
             // Convert Model to Response DTO
@@ -40,10 +40,10 @@ namespace MovieRestApiWithEF.Controllers
         /// Get User by Id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneAsync(int id)
+        public async Task<IActionResult> GetOneUserAsync(int id)
         {
             // Fetch user
-            var user = await _repositoryManager.UserRepository.GetByIdAsync(id);
+            var user = await _repositoryManager.UserRepository.FindByIdAsync(id);
 
             // Check if user not exists
             if (user is null)
@@ -67,7 +67,7 @@ namespace MovieRestApiWithEF.Controllers
         /// <return></return>
         [HttpDelete("{userId:int}")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> DeleteAsync(int userId)
+        public async Task<IActionResult> DeleteUserAsync(int userId)
         {
             // Check if user exists
             var userExists = await _repositoryManager.UserRepository.ExistsWithIdAsync(userId);

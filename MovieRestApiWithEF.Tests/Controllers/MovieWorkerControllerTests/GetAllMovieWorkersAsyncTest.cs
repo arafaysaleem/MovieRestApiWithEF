@@ -5,7 +5,7 @@ using Moq;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
 {
-    public class GetAllMovieWorkersAsyncTest : MovieWorkerControllerTestBase
+    public class GetAllMovieWorkersAsyncTest : MovieWorkersControllerTestBase
     {
         [Fact]
         public async Task GetAllMovieWorkersAsync_WithoutDetails_HasMovieWorkers_Returns200Status()
