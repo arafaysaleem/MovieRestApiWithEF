@@ -32,7 +32,7 @@ namespace MovieRestApiWithEF.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilter))] // Checks exists and validates data from client
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginReq)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequest loginReq)
         {
             // Check if email found
             var user = await _repositoryManager.UserRepository.FindByEmailAsync(loginReq.Email!);
