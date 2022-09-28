@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.Requests;
 using Entities.Responses;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
@@ -125,6 +126,11 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
                 Name = "Genre 1",
                 Movies = new List<MovieResponse>(),
             };
+        }
+
+        public static GenreCreateRequest NewGenreCreateRequest()
+        {
+            return new GenreCreateRequest { Name = "New Genre" };
         }
     }
 }
