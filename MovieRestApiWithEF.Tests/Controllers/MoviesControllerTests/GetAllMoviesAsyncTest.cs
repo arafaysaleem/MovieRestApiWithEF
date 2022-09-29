@@ -11,7 +11,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetAllMoviesAsync_HasMovies_Returns200Status()
         {
             /// Arrange
-            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.AllMovies());
+            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.AllMovies());
 
             /// Act
             var result = await _systemUnderTest.GetAllMoviesAsync();
@@ -26,7 +26,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetAllMoviesAsync_HasMovies_ReturnsMoviesWithDetails()
         {
             /// Arrange
-            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.AllMovies());
+            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.AllMovies());
 
             /// Act
             var okResult = await _systemUnderTest.GetAllMoviesAsync() as OkObjectResult;
@@ -34,14 +34,14 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
             /// Assert
             okResult.Should().NotBeNull();
             okResult!.Value.Should().BeOfType<List<MovieWithDetailsResponse>>();
-            okResult!.Value.Should().BeEquivalentTo(GenresMockData.AllMoviesResponse());
+            okResult!.Value.Should().BeEquivalentTo(MoviesMockData.AllMoviesResponse());
         }
 
         [Fact]
         public async Task GetAllMoviesAsync_HasNoMovies_Returns200Status()
         {
             /// Arrange
-            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.EmptyMovies());
+            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.EmptyMovies());
 
             /// Act
             var result = await _systemUnderTest.GetAllMoviesAsync();
@@ -56,7 +56,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetAllMoviesAsync_HasNoMovies_ReturnsEmptyMovies()
         {
             /// Arrange
-            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(GenresMockData.EmptyMovies());
+            _mockMovieRepository.Setup(x => x.FindAllAsync()).ReturnsAsync(MoviesMockData.EmptyMovies());
 
             /// Act
             var okResult = await _systemUnderTest.GetAllMoviesAsync() as OkObjectResult;

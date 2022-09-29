@@ -3,7 +3,7 @@ using Entities.Responses;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
 {
-    public class GenresMockData
+    public class MoviesMockData
     {
         private static DateTime DateTime = DateTime.Now;
 

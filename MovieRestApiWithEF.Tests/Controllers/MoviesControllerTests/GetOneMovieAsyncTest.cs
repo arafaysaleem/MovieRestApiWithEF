@@ -13,7 +13,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetOneMovieAsync_MovieFound_Returns200Status()
         {
             /// Arrange
-            var mockMovie = GenresMockData.SingleMovie();
+            var mockMovie = MoviesMockData.SingleMovie();
             var movieId = mockMovie.Id;
             _mockMovieRepository.Setup(x => x.FindByIdAsync(movieId)).ReturnsAsync(mockMovie);
 
@@ -30,7 +30,7 @@ namespace MovieRestApiWithEF.Tests.Unit.Controllers.MoviesControllerTests
         public async Task GetOneMovieAsync_MovieFound_ReturnsMovieWithGivenId()
         {
             /// Arrange
-            var mockMovie = GenresMockData.SingleMovie();
+            var mockMovie = MoviesMockData.SingleMovie();
             var movieId = mockMovie.Id;
             _mockMovieRepository.Setup(x => x.FindByIdAsync(movieId)).ReturnsAsync(mockMovie);
 
