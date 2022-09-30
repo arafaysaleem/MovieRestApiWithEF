@@ -28,6 +28,13 @@ namespace Repositories
             return await results.ToListAsync();
         }
 
+        public async Task<IEnumerable<MovieWorker>> FindAllFromIdsAsync(IEnumerable<int> ids)
+        {
+            var results = FindByCondition(x => ids.Contains(x.Id), tracking: true);
+
+            return await results.ToListAsync();
+        }
+
         public async Task<MovieWorker?> FindByIdAsync(int id)
         {
             return await FindByCondition(e => e.Id.Equals(id))

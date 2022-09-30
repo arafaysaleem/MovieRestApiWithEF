@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieRestApiWithEF.Exceptions;
 using MovieRestApiWithEF.Filters;
+using Repositories;
 
 namespace MovieRestApiWithEF.Controllers
 {
@@ -77,12 +78,11 @@ namespace MovieRestApiWithEF.Controllers
             if (movieFound)
             {
                 _logger.LogError($"Movie with title \"{movieReq.Title}\" already exists in db.");
-                throw new DuplicateEntryException("Movie already Exist");
+                throw new DuplicateEntryException("Movie already exists");
             }
 
             // Get Nested Models using Nested Ids From DTO
-            var cast = await _repositoryManager.MovieWorkerRepository
-                .FindAllAsync(e => movieReq.CastIds.Contains(e.Id), tracking: true);
+            var cast = await _repositoryManager.MovieWorkerRepository.FindAllFromIdsAsync(movieReq.CastIds);
 
             // Convert Request DTO to EFCore Model
             var movie = _mapper.Map<Movie>(movieReq);

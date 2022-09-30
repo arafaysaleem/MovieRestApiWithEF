@@ -11,6 +11,8 @@ namespace Contracts
             bool tracking = false
         );
 
+        Task<IEnumerable<MovieWorker>> FindAllFromIdsAsync(IEnumerable<int> ids);
+
         Task<MovieWorker?> FindByIdAsync(int id);
 
         Task<MovieWorker?> FindMovieWorkerMoviesAsync(int id);
