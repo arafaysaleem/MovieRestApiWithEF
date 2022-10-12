@@ -1,7 +1,7 @@
-﻿using Entities.Models;
+﻿using MovieRestApiWithEF.Core.Models;
 using System.Security.Claims;
 
-namespace Contracts
+namespace MovieRestApiWithEF.Infrastructure
 {
     public interface IJwtService
     {

@@ -1,4 +1,4 @@
-﻿namespace Entities.Responses
+﻿namespace MovieRestApiWithEF.Core.Responses
 {
     // Acts as a DTO for Get Movie with nested info endpoints
     public class MovieWithDetailsResponse

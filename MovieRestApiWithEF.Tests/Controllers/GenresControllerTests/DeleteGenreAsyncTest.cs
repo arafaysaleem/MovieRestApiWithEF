@@ -3,7 +3,7 @@ using Entities.Responses;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using MovieRestApiWithEF.Exceptions;
+using MovieRestApiWithEF.API.Exceptions;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.GenresControllerTests
 {

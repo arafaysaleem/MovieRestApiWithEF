@@ -1,4 +1,4 @@
-﻿namespace Entities.Responses
+﻿namespace MovieRestApiWithEF.Core.Responses
 {
     // Acts as a DTO for successful login endpoints
     public class AuthenticatedResponse

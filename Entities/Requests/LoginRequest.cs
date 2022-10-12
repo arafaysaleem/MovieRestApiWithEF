@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Requests
+namespace MovieRestApiWithEF.Core.Requests
 {
     // Acts as a DTO for Login endpoint
     public class LoginRequest

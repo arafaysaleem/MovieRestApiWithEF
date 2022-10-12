@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using MovieRestApiWithEF.API.Extensions;
 using MovieRestApiWithEF.Exceptions;
-using MovieRestApiWithEF.Extensions;
 
-namespace MovieRestApiWithEF.Filters
+namespace MovieRestApiWithEF.API.Filters
 {
     public class ValidationFilter : IActionFilter
     {

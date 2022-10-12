@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Contracts
+namespace MovieRestApiWithEF.Infrastructure
 {
     public interface IRepositoryBase<TEntity>
     {

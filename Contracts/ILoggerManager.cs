@@ -1,4 +1,4 @@
-﻿namespace Contracts
+﻿namespace MovieRestApiWithEF.Infrastructure
 {
     public interface ILoggerManager
     {

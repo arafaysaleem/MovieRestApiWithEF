@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Entities.Models;
-using Entities.Requests;
-using Entities.Responses;
+using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Core.Requests;
+using MovieRestApiWithEF.Core.Responses;
 
-namespace MovieRestApiWithEF
+namespace MovieRestApiWithEF.API
 {
     public class MappingProfile : Profile
     {

@@ -1,11 +1,11 @@
-﻿using Contracts;
-using Entities.Models;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
+using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Infrastructure;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Repositories
+namespace MovieRestApiWithEF.Application
 {
     public class JwtService : IJwtService
     {

@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using Contracts;
-using Entities.Models;
-using Entities.Requests;
-using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieRestApiWithEF.API.Filters;
+using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Core.Requests;
+using MovieRestApiWithEF.Core.Responses;
 using MovieRestApiWithEF.Exceptions;
-using MovieRestApiWithEF.Filters;
+using MovieRestApiWithEF.Infrastructure;
 
-namespace MovieRestApiWithEF.Controllers
+namespace MovieRestApiWithEF.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

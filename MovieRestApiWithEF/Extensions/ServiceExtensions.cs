@@ -1,19 +1,20 @@
-﻿using Contracts;
-using Entities;
-using Entities.Models;
-using LoggerService;
+﻿using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MovieRestApiWithEF.API.Filters;
+using MovieRestApiWithEF.Application;
+using MovieRestApiWithEF.Core;
+using MovieRestApiWithEF.Core.Models;
 using MovieRestApiWithEF.Filters;
+using MovieRestApiWithEF.Infrastructure;
 using NLog;
-using Repositories;
 using System.Text;
 
-namespace MovieRestApiWithEF.Extensions
+namespace MovieRestApiWithEF.API.Extensions
 {
     public static class ServiceExtensions
     {

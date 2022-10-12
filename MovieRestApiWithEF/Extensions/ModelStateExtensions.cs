@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
-namespace MovieRestApiWithEF.Extensions
+namespace MovieRestApiWithEF.API.Extensions
 {
     public static class ModelStateExtensions
     {
@@ -10,7 +10,7 @@ namespace MovieRestApiWithEF.Extensions
         {
             // Get key(s) and error message(s) from the ModelState
             var errors = modelState
-                .Where(x => (x.Value?.Errors.Count ?? 0)  > 0)
+                .Where(x => (x.Value?.Errors.Count ?? 0) > 0)
                 .ToDictionary(
                     kvp => kvp.Key,
                     kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()

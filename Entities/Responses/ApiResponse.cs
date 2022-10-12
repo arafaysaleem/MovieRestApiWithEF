@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace Entities.Responses
+namespace MovieRestApiWithEF.Core.Responses
 {
     public class ApiResponse
     {

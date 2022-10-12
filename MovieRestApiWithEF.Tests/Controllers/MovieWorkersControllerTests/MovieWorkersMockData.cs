@@ -1,5 +1,5 @@
-﻿using Entities.Models;
-using Entities.Responses;
+﻿using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Core.Responses;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.MovieWorkersControllerTests
 {

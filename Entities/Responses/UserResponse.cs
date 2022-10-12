@@ -1,4 +1,4 @@
-﻿namespace Entities.Responses
+﻿namespace MovieRestApiWithEF.Core.Responses
 {
     public class UserResponse
     {

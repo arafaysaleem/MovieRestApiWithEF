@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Contracts;
 using Moq;
-using MovieRestApiWithEF.Controllers;
+using MovieRestApiWithEF.API.Controllers;
+using MovieRestApiWithEF.Infrastructure;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.AuthControllerTests
 {

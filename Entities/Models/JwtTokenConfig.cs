@@ -1,4 +1,4 @@
-﻿namespace Entities.Models
+﻿namespace MovieRestApiWithEF.Core.Models
 {
     public class JwtTokenConfig
     {

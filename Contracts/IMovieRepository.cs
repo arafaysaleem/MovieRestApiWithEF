@@ -1,6 +1,6 @@
-﻿using Entities.Models;
+﻿using MovieRestApiWithEF.Core.Models;
 
-namespace Contracts
+namespace MovieRestApiWithEF.Infrastructure
 {
     public interface IMovieRepository
     {

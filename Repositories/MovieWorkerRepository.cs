@@ -1,10 +1,10 @@
-﻿using Contracts;
-using Entities;
-using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieRestApiWithEF.Core;
+using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Infrastructure;
 using System.Linq.Expressions;
 
-namespace Repositories
+namespace MovieRestApiWithEF.Application
 {
     public class MovieWorkerRepository : RepositoryBase<MovieWorker>, IMovieWorkerRepository
     {

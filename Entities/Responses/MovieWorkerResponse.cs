@@ -1,4 +1,4 @@
-﻿namespace Entities.Responses
+﻿namespace MovieRestApiWithEF.Core.Responses
 {
     // Acts as a DTO for Get Movie Worker endpoints
     public class MovieWorkerResponse

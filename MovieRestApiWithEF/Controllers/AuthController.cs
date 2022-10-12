@@ -1,13 +1,13 @@
-﻿using Contracts;
-using Entities.Requests;
-using Entities.Responses;
+﻿using Entities.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieRestApiWithEF.API.Extensions;
+using MovieRestApiWithEF.API.Filters;
+using MovieRestApiWithEF.Core.Requests;
 using MovieRestApiWithEF.Exceptions;
-using MovieRestApiWithEF.Extensions;
-using MovieRestApiWithEF.Filters;
+using MovieRestApiWithEF.Infrastructure;
 
-namespace MovieRestApiWithEF.Controllers
+namespace MovieRestApiWithEF.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

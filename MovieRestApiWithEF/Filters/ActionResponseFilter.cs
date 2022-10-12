@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Entities.Responses;
 using System.Net;
 
-namespace MovieRestApiWithEF.Filters
+namespace MovieRestApiWithEF.API.Filters
 {
     public class ActionResponseFilter : IActionFilter
     {

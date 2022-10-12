@@ -1,7 +1,7 @@
-﻿using Entities.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieRestApiWithEF.Core.Models;
 
-namespace Entities
+namespace MovieRestApiWithEF.Core
 {
     public class MovieAppDbContext : DbContext
     {

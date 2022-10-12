@@ -1,4 +1,4 @@
-﻿namespace Entities.Responses
+﻿namespace MovieRestApiWithEF.Core.Responses
 {
     // Acts as a DTO for Get Genre With Nested Details endpoints
     public class GenreWithDetailsResponse

@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using MovieRestApiWithEF.Infrastructure;
 using NLog;
 
 namespace LoggerService

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MovieRestApiWithEF.Exceptions
+namespace MovieRestApiWithEF.API.Exceptions
 {
     public class BaseException : Exception
     {
@@ -26,7 +26,7 @@ namespace MovieRestApiWithEF.Exceptions
 
         public HttpStatusCode StatusCode
         {
-            get { return this.statusCode; }
+            get { return statusCode; }
         }
     }
 }

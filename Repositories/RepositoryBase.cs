@@ -1,9 +1,9 @@
-﻿using Contracts;
-using Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieRestApiWithEF.Core;
+using MovieRestApiWithEF.Infrastructure;
 using System.Linq.Expressions;
 
-namespace Repositories
+namespace MovieRestApiWithEF.Application
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {

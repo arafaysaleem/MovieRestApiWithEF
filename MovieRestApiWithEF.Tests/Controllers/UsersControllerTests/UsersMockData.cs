@@ -1,6 +1,6 @@
-﻿using Entities.Models;
-using Entities.Responses;
-using MovieRestApiWithEF.Extensions;
+﻿using MovieRestApiWithEF.API.Extensions;
+using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Core.Responses;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.UsersControllerTests
 {

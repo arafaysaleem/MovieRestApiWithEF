@@ -1,9 +1,9 @@
-﻿using Entities.Models;
-using Entities.Responses;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using MovieRestApiWithEF.Exceptions;
+using MovieRestApiWithEF.API.Exceptions;
+using MovieRestApiWithEF.Core.Models;
+using MovieRestApiWithEF.Core.Responses;
 
 namespace MovieRestApiWithEF.Tests.Unit.Controllers.UsersControllerTests
 {

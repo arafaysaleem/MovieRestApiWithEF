@@ -1,7 +1,8 @@
-﻿using Contracts;
-using Entities;
+﻿using MovieRestApiWithEF.Core;
+using MovieRestApiWithEF.Infrastructure;
+using Repositories;
 
-namespace Repositories
+namespace MovieRestApiWithEF.Application
 {
     public class RepositoryManager : IRepositoryManager
     {

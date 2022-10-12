@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MovieRestApiWithEF.Exceptions
+namespace MovieRestApiWithEF.API.Exceptions
 {
     public class NotFoundException : BaseException
     {
@@ -21,10 +21,10 @@ namespace MovieRestApiWithEF.Exceptions
     {
         public object Details { get; private set; }
         public UnprocessibleEntityException(string message, object details) : base(
-            HttpStatusCode.UnprocessableEntity, 
+            HttpStatusCode.UnprocessableEntity,
             message)
         {
-            this.Details = details;
+            Details = details;
         }
     }
 

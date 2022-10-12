@@ -1,4 +1,4 @@
-﻿namespace MovieRestApiWithEF.Extensions
+﻿namespace MovieRestApiWithEF.API.Extensions
 {
     public static class CollectionExtensions
     {

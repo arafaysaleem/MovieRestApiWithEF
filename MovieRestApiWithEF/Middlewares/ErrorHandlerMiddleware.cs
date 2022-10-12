@@ -1,9 +1,9 @@
-﻿using Contracts;
-using Entities.Responses;
-using MovieRestApiWithEF.Exceptions;
+﻿using Entities.Responses;
+using MovieRestApiWithEF.API.Exceptions;
+using MovieRestApiWithEF.Infrastructure;
 using System.Net;
 
-namespace MovieRestApiWithEF.Middlewares
+namespace MovieRestApiWithEF.API.Middlewares
 {
     public class ErrorHandlerMiddleware
     {
@@ -27,7 +27,8 @@ namespace MovieRestApiWithEF.Middlewares
                 if (context.Response.StatusCode == (int)HttpStatusCode.Forbidden)
                 {
                     throw new ForbiddenException("User does not have permission for the action.");
-                } else if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+                }
+                else if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
                 {
                     throw new UnauthorizedException("Authentication failed.");
                 }
