@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MovieRestApiWithEF.API.Exceptions;
 using MovieRestApiWithEF.API.Filters;
 using MovieRestApiWithEF.Core.Models;
 using MovieRestApiWithEF.Core.Requests;
 using MovieRestApiWithEF.Core.Responses;
-using MovieRestApiWithEF.Exceptions;
 using MovieRestApiWithEF.Infrastructure;
 
 namespace MovieRestApiWithEF.API.Controllers

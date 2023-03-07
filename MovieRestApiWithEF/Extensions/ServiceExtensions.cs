@@ -9,7 +9,6 @@ using MovieRestApiWithEF.API.Filters;
 using MovieRestApiWithEF.Application;
 using MovieRestApiWithEF.Core;
 using MovieRestApiWithEF.Core.Models;
-using MovieRestApiWithEF.Filters;
 using MovieRestApiWithEF.Infrastructure;
 using NLog;
 using System.Text;

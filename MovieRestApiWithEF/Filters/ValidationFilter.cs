@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using MovieRestApiWithEF.API.Extensions;
-using MovieRestApiWithEF.Exceptions;
+using MovieRestApiWithEF.API.Exceptions;
 
 namespace MovieRestApiWithEF.API.Filters
 {

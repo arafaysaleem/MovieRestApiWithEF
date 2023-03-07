@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 using MovieRestApiWithEF.API.Extensions;
 using MovieRestApiWithEF.API.Middlewares;
-using MovieRestApiWithEF.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

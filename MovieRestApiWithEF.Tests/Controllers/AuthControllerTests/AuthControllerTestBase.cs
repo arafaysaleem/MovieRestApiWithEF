@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Moq;
+﻿using Moq;
 using MovieRestApiWithEF.API.Controllers;
 using MovieRestApiWithEF.Infrastructure;
 

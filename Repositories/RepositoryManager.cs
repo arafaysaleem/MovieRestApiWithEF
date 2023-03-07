@@ -1,6 +1,5 @@
 ﻿using MovieRestApiWithEF.Core;
 using MovieRestApiWithEF.Infrastructure;
-using Repositories;
 
 namespace MovieRestApiWithEF.Application
 {

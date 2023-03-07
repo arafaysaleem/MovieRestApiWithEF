@@ -1,5 +1,5 @@
-﻿using Entities.Responses;
-using MovieRestApiWithEF.API.Exceptions;
+﻿using MovieRestApiWithEF.API.Exceptions;
+using MovieRestApiWithEF.Core.Responses;
 using MovieRestApiWithEF.Infrastructure;
 using System.Net;
 

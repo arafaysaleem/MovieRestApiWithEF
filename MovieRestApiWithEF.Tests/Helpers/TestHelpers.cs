@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MovieRestApiWithEF.API;
 
 namespace MovieRestApiWithEF.Tests.Unit.Helpers
 {

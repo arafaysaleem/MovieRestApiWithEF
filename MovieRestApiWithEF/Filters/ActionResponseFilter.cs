@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Entities.Responses;
 using System.Net;
+using MovieRestApiWithEF.Core.Responses;
 
 namespace MovieRestApiWithEF.API.Filters
 {

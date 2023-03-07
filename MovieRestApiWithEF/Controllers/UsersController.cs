@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieRestApiWithEF.Core.Responses;
-using MovieRestApiWithEF.Exceptions;
+using MovieRestApiWithEF.API.Exceptions;
 using MovieRestApiWithEF.Infrastructure;
 
 namespace MovieRestApiWithEF.API.Controllers

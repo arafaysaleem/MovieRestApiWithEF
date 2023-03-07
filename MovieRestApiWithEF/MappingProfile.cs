@@ -19,23 +19,23 @@ namespace MovieRestApiWithEF.API
             CreateMap<MovieCreateRequest, Movie>();
 
 
-            // To map EFCore model to Movie response
+            // To map EFCore model to Genre response
             CreateMap<Genre, GenreResponse>();
 
-            // To map EFCore model to Movie with nested properties response
+            // To map EFCore model to Genre with nested properties response
             CreateMap<Genre, GenreWithDetailsResponse>();
 
-            // To map request movie body to Movie EFCore model
+            // To map request genre body to Genre EFCore model
             CreateMap<GenreCreateRequest, Genre>();
 
 
-            // To map EFCore model to Movie response
+            // To map EFCore model to MovieWorker response
             CreateMap<MovieWorker, MovieWorkerResponse>();
 
-            // To map EFCore model to Movie with nested properties response
+            // To map EFCore model to MovieWorker with nested properties response
             CreateMap<MovieWorker, MovieWorkerWithDetailsResponse>();
 
-            // To map request movie body to Movie EFCore model
+            // To map request movie worker body to MovieWorker EFCore model
             CreateMap<MovieWorkerCreateRequest, MovieWorker>();
 
 
