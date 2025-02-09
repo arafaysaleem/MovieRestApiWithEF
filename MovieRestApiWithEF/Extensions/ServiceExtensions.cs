@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieRestApiWithEF.API.Filters;
@@ -72,8 +73,7 @@ namespace MovieRestApiWithEF.API.Extensions
 
         public static void ConfigureJwtService(this IServiceCollection services, ConfigurationManager configuration)
         {
-            var jwtTokenConfig = configuration.GetSection("jwt").Get<JwtTokenConfig>();
-            services.AddSingleton(jwtTokenConfig);
+            services.ConfigureOptions<JwtOptionsSetup>();
             services.AddScoped<IJwtService, JwtService>();
         }
 
@@ -85,7 +85,7 @@ namespace MovieRestApiWithEF.API.Extensions
 
         public static void AddJwtAuthentication(this IServiceCollection services, ConfigurationManager configuration)
         {
-            var jwtTokenConfig = configuration.GetSection("jwt").Get<JwtTokenConfig>();
+            var jwtTokenConfig = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.Secret));
 
             // This registers an authentication service along with the authentication options.
@@ -97,14 +97,13 @@ namespace MovieRestApiWithEF.API.Extensions
             // This handler internally invokes the AuthenticateAsync method of JWT Bearer with the provided validation params.
             // Once the token is validated, the User(ClaimsPrinciple) is automatically added to the context and can be
             // accessed in the controller using User.Identity or HttpContext.User.Claims
-            services.AddAuthentication(authOptions =>
-            {
-                // To decide how to construct user identity in case of successful authentication
-                authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                // To decide how to check auth header exists and return 401 if it is missing
-                authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(jwtBearerOptions =>
+            //
+            // JwtBearerDefaults.AuthenticationScheme is the default scheme used by the handler to authenticate the user.
+            // It helps to decide how to construct user identity in case of successful authentication and to
+            // decide how to check auth header exists and return 401 if it is missing
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // Sets this for AuthenticationScheme and ChallengeScheme
+                .AddJwtBearer(jwtBearerOptions =>
             {
                 jwtBearerOptions.RequireHttpsMetadata = true;
                 jwtBearerOptions.SaveToken = true;

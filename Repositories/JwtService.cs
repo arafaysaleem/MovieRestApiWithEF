@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MovieRestApiWithEF.Core.Models;
 using MovieRestApiWithEF.Infrastructure;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,11 +10,11 @@ namespace MovieRestApiWithEF.Application
 {
     public class JwtService : IJwtService
     {
-        private readonly JwtTokenConfig _jwtTokenConfig;
+        private readonly JwtOptions _jwtTokenConfig;
 
-        public JwtService(JwtTokenConfig jwtTokenConfig)
+        public JwtService(IOptions<JwtOptions> options)
         {
-            _jwtTokenConfig = jwtTokenConfig;
+            _jwtTokenConfig = options.Value;
         }
 
         private Claim[] BuildClaims(User user)
